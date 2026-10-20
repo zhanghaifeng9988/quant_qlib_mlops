@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""M1 Step 3: 分批采集 yfinance 日线，落盘即释放。"""
+"""M1 Step 3: 分批采集 yfinance 日线，落盘即释放内存。"""
 import gc
 import json
 import time

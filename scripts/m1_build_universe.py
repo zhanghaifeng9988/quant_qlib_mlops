@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""M1 Step 1: 构建 universe 快照与行业映射。"""
+"""M1 Step 1-2: 构建 universe 快照与行业映射。负责“画圈”（定股票池）和“打标签”（定行业分类）。"""
 from pathlib import Path
 import pandas as pd
 import yaml
