@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""M1 Step 1-2: 构建 universe 快照与行业映射。负责“画圈”（定股票池）和“打标签”（定行业分类）。"""
+"""M1 Step 1-2: 选股
+圈定股票池(Universe)，打上行业标签industry_mapping.csv，并留下数据快照universes.yaml。 """
 from pathlib import Path
 import pandas as pd
 import yaml
