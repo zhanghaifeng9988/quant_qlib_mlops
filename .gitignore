@@ -15,7 +15,7 @@ data/qlib_cache/
 data/qlib_bin/us_data/features/
 data/qlib_bin/us_data/calendars/
 data/qlib_bin/us_data/instruments/all.txt
-
+data/universe/raw/
 # MLflow / 模型产物
 mlruns/
 mlartifacts/
