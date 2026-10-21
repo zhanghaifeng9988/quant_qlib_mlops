@@ -183,3 +183,70 @@ CI/CD	GitHub Actions
 数据源	yfinance（手动采集），开源 GICS 映射表
 版本：v1.0（定稿）
 锁定日期：2026-10-19 09:30 am
+---
+
+## 附录 A：M1 实际产出（2026-10-21 封存）
+
+### A.1 版本矩阵（锁定）
+
+| 组件 | 版本 | 说明 |
+|---|---|---|
+| Python | 3.11.16 | uv 管理的项目 venv |
+| pyqlib | 0.9.7 | `uv add "pyqlib>=0.9.7,<0.10"` |
+| pandas | 2.2.3 | 锁 `>=2.1,<2.3`，避开 3.0 破坏性变更 |
+| numpy | 1.26.4 | 锁 `>=1.26,<2.0`，避开 numpy 2.x 与回测模块不兼容 |
+| yfinance | 1.7.0 | 手动采集，不自动调度 |
+| 构建工具 | uv | `uv venv` + `uv add` + `uv run` |
+
+### A.2 Universe 快照
+
+| 项 | 值 |
+|---|---|
+| snapshot_id | `us_2026-10-19_dev500` |
+| target_universe | 518 只（S&P 500 ∪ NASDAQ 100 ∪ Dow Jones，去重） |
+| dev_universe | 500 只（按 market_cap 取 Top 500） |
+| 行业映射 | 100% 覆盖，10 方向；Materials=5、Communication Services=9 样本偏薄，M5 分组监控需注意 |
+
+> **定稿修正**：架构 v1.0 D1 原写 target=2000 只，实测三大指数去重后为 518 只。修正为 target=518、dev=500。2000 只对应“美股全市场按流动性筛选”，属二期范围。
+
+### A.3 数据产出
+
+| 项 | 值 |
+|---|---|
+| 原始数据 | `data/raw/us_daily/` 500 CSV，1,772,300 行，成功率 100% |
+| Qlib `.bin` | `data/qlib_bin/us_data/`，47 MB，压缩比约 40:1 |
+| 日历 | 2011-10-24 → 2026-10-16，3767 交易日 |
+| 字段 | open, high, low, close, volume, factor |
+| 质量检查 | close 无 NaN、factor>0、volume≥0，issues=0 |
+| 峰值内存 | 0.22 GB（远低于 3 GB 安全线） |
+
+### A.4 数据契约（入库）
+
+| 文件 | 作用 |
+|---|---|
+| `data/universe/universes.yaml` | target/dev 双轨快照 + 缩减规则 + 源 URL |
+| `data/universe/industry_mapping.csv` | symbol → source_sector → 10 方向 |
+| `data/qlib_bin/us_data/manifest.json` | 血缘锚点：snapshot_id、日历、字段、三个目录 sha256 |
+
+### A.5 脚本清单
+
+| 脚本 | 职责 |
+|---|---|
+| `scripts/m1_fetch_sources.sh` | 下载三个指数源 CSV 到 `data/universe/raw/` |
+| `scripts/m1_build_universe.py` | 生成 `universes.yaml` + `industry_mapping.csv` |
+| `scripts/m1_collect_raw.py` | 分批 50 只 yfinance 采集，落盘即释放 |
+| `scripts/qlib_tools/dump_bin.py` | 从 Qlib GitHub 下载的 dump 工具（pip 包不含） |
+| `scripts/m1_write_manifest.py` | 生成 `manifest.json` |
+| `scripts/m1_acceptance.py` | 日历/instruments/样本/内存四项验收 |
+
+### A.6 M1 复现顺序
+
+```bash
+bash scripts/m1_fetch_sources.sh
+uv run python scripts/m1_build_universe.py
+uv run python scripts/m1_collect_raw.py
+uv run python scripts/qlib_tools/dump_bin.py dump_all \
+  --data_path data/raw/us_daily --qlib_dir data/qlib_bin/us_data \
+  --include_fields open,high,low,close,volume,factor --max_workers 2 --freq day
+uv run python scripts/m1_write_manifest.py
+uv run python scripts/m1_acceptance.py
