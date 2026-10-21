@@ -20,7 +20,8 @@ data/universe/raw/
 mlruns/
 mlartifacts/
 models/
-
+*.db
+*.db-journal
 # 日志
 *.log
 

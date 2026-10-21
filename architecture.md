@@ -250,3 +250,83 @@ uv run python scripts/qlib_tools/dump_bin.py dump_all \
   --include_fields open,high,low,close,volume,factor --max_workers 2 --freq day
 uv run python scripts/m1_write_manifest.py
 uv run python scripts/m1_acceptance.py
+
+
+
+---
+
+## 附录 B：M2a 单窗口 qrun 闭环（2026-10-21 封存）
+
+### B.1 目标与范围
+
+M2a 的目标是验证 **qrun + Alpha158 + LGBModel + MLflow + 回测** 这条链路在 US 数据上能完整跑通，**不做调参、不做多窗口**。多窗口 walk-forward 属 M2b。
+
+### B.2 配置
+
+- 文件：`configs/workflow_config_lightgbm_Alpha158_us.yaml`
+- 基线：Qlib 官方 `examples/benchmarks/LightGBM/workflow_config_lightgbm_Alpha158.yaml`（71 行）
+- 窗口：W1（train 2011-10-24→2017-12-31 / valid 2018 / test 2019）
+
+相对官方版的改动：
+
+| 字段 | 官方值 | 本项目值 | 原因 |
+|---|---|---|---|
+| provider_uri | `~/.qlib/qlib_data/cn_data` | `data/qlib_bin/us_data` | 本地 US 数据 |
+| region | `cn` | `us` | 美股交易规则 |
+| market / benchmark | `csi300` / `SH000300` | `all` / `all` | 仅有 all.txt；无 SPX 数据，基准临时用 universe 自身 |
+| 全部日期 | cn 区间 | W1 区间 | 对齐数据和 walk-forward 首窗口 |
+| limit_threshold | `0.095` | 删除（region=us 默认 None） | 美股无统一涨跌停 |
+| num_threads | `20` | `8` | 7.6 GB 内存约束 |
+
+### B.3 MLflow 后端
+
+- **文件后端（`./mlruns`）已不可用**：MLflow 3.13+ 将 filesystem tracking backend 标记为维护模式，默认拒绝。
+- **采用 SQLite 后端**：YAML 的 `qlib_init.exp_manager` 配置 `uri: "sqlite:///mlflow.db"`。
+- UI 启动必须与 qrun 指向同一后端：`mlflow ui --backend-store-uri sqlite:///mlflow.db`。
+- `mlflow.db` 与 `mlflow.db-journal` 加入 `.gitignore`，不入库。
+- 已装 MLflow 版本：3.17.1。
+
+### B.4 运行结果
+
+| 项 | 值 |
+|---|---|
+| 数据加载 | 37.3 s（Alpha158 全量因子计算） |
+| 训练 | LightGBM early stopping，best iteration = 4 |
+| IC / ICIR | 0.0058 / 0.0502 |
+| Rank IC / Rank ICIR | 0.0063 / 0.0657 |
+| Benchmark 年化（universe 自身） | 30.35% |
+| 超额收益（无成本）年化 | 5.90%，IR 0.34 |
+| 超额收益（含成本）年化 | 1.10%，IR 0.06 |
+| Artifacts | `pred.pkl`、`port_analysis_1day.pkl`、`indicator_analysis_1day.pkl` |
+
+**观察**：IC 极低、best iteration=4，说明模型在 valid 段几乎未学到有效信号。M2a 的目标是链路验证，此结果不阻塞验收；M2b 做 7 窗口时再评估 IC 分布是否稳定。
+
+### B.5 已知警告（不影响链路）
+
+- `ModuleNotFoundError: CatBoostModel / XGBModel / PyTorch models are skipped`：未安装可选模型依赖，Qlib 跳过，正常。
+- `Gym has been unmaintained since 2022 and does not support NumPy 2.0`：Qlib 回测模块的传递依赖提示，当前 numpy 1.26.4 未触发实际问题。
+- `load calendar error: freq=day, future=True; return current calendar!`：`.bin` 无 future calendar，回测回退到当前日历，T+1 模拟精度略降，不阻塞 M2a。
+- `RuntimeWarning: Mean of empty slice`：回测中某些日期截面为空时的 nanmean 警告，正常。
+
+### B.6 M2b 决策：逐窗口 qrun（方案 A）
+
+M2b 采用**逐窗口独立 qrun**，不用 `RollingGen` + `TrainerRM`。理由：
+
+1. 每个窗口一个 MLflow run，失败可单独重跑；
+2. 内存峰值 = 单窗口峰值，符合 7.6 GB 约束；
+3. M5 监控只需每窗口 IC 时间序列，不需要 `RollingEnsemble` 合并预测；
+4. 符合小型私募“跑 N 次、每次可查、出问题单独修”的工程现实。
+
+7 窗口规则（已锁定）：
+
+| 窗口 | train | valid | test |
+|---|---|---|---|
+| W1 | 2011-10-24 → 2017-12-31 | 2018 | 2019 |
+| W2 | 2011-10-24 → 2018-12-31 | 2019 | 2020（含疫情崩盘） |
+| W3 | 2011-10-24 → 2019-12-31 | 2020 | 2021 |
+| W4 | 2011-10-24 → 2020-12-31 | 2021 | 2022 |
+| W5 | 2011-10-24 → 2021-12-31 | 2022 | 2023 |
+| W6 | 2011-10-24 → 2022-12-31 | 2023 | 2024 |
+| W7 | 2011-10-24 → 2023-12-31 | 2024 | 2025-01-01 → 2026-10-16 |
+
+rtype = `ROLL_EX`（扩展窗口，训练起点固定）。
