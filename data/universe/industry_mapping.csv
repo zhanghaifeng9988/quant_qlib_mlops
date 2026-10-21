@@ -1,0 +1,501 @@
+symbol,source_sector,mapped_direction
+NVDA,Technology,Technology
+AAPL,Technology,Technology
+GOOGL,Technology,Technology
+GOOG,Technology,Technology
+MSFT,Technology,Technology
+AMZN,Consumer Discretionary,Consumer Discretionary
+META,Technology,Technology
+AVGO,Technology,Technology
+TSLA,Industrials,Industrials
+BRK/B,Uncategorized,Financials
+LLY,Health Care,Health Care
+MU,Technology,Technology
+AMD,Technology,Technology
+WMT,Consumer Discretionary,Consumer Discretionary
+JPM,Finance,Financials
+XOM,Energy,Energy
+V,Consumer Discretionary,Consumer Discretionary
+ASML,Technology,Technology
+JNJ,Health Care,Health Care
+MA,Consumer Discretionary,Consumer Discretionary
+INTC,Technology,Technology
+ABBV,Health Care,Health Care
+PLTR,Technology,Technology
+CSCO,Telecommunications,Communication Services
+CVX,Energy,Energy
+COST,Consumer Discretionary,Consumer Discretionary
+ORCL,Technology,Technology
+KO,Consumer Staples,Consumer Staples
+PG,Consumer Discretionary,Consumer Discretionary
+MRK,Health Care,Health Care
+BAC,Finance,Financials
+LRCX,Technology,Technology
+UNH,Health Care,Health Care
+AMAT,Technology,Technology
+CAT,Industrials,Industrials
+DELL,Technology,Technology
+PM,Health Care,Health Care
+GE,Technology,Technology
+PANW,Technology,Technology
+HD,Consumer Discretionary,Consumer Discretionary
+NFLX,Consumer Discretionary,Consumer Discretionary
+MS,Finance,Financials
+TXN,Technology,Technology
+GS,Finance,Financials
+CRWD,Technology,Technology
+ARM,Technology,Technology
+RTX,Industrials,Industrials
+GEV,Technology,Technology
+TMO,Industrials,Industrials
+ANET,Telecommunications,Communication Services
+WFC,Finance,Financials
+KLAC,Technology,Technology
+AMGN,Health Care,Health Care
+LIN,Basic Materials,Materials
+SHOP,Technology,Technology
+MRVL,Technology,Technology
+IBM,Technology,Technology
+AXP,Finance,Financials
+C,Finance,Financials
+SNDK,Technology,Technology
+APH,Technology,Technology
+ADI,Technology,Technology
+CRM,Technology,Technology
+GILD,Health Care,Health Care
+DIS,Consumer Discretionary,Consumer Discretionary
+VZ,Telecommunications,Communication Services
+QCOM,Technology,Technology
+ABT,Health Care,Health Care
+PEP,Consumer Staples,Consumer Staples
+DE,Industrials,Industrials
+COP,Energy,Energy
+UNP,Industrials,Industrials
+TMUS,Telecommunications,Communication Services
+MCD,Consumer Discretionary,Consumer Discretionary
+SCHW,Finance,Financials
+WELL,Real Estate,Financials
+PFE,Health Care,Health Care
+BLK,Finance,Financials
+NEE,Utilities,Utilities
+STX,Technology,Technology
+ETN,Technology,Technology
+DHR,Industrials,Industrials
+T,Telecommunications,Communication Services
+TJX,Consumer Discretionary,Consumer Discretionary
+ISRG,Health Care,Health Care
+BA,Industrials,Industrials
+NOW,Technology,Technology
+ACN,Consumer Discretionary,Consumer Discretionary
+UBER,Consumer Discretionary,Consumer Discretionary
+MPC,Energy,Energy
+WDC,Technology,Technology
+CB,Finance,Financials
+FTNT,Technology,Technology
+VLO,Energy,Energy
+MNST,Consumer Staples,Consumer Staples
+VRTX,Health Care,Health Care
+PGR,Finance,Financials
+PLD,Real Estate,Financials
+MO,Health Care,Health Care
+GLW,Industrials,Industrials
+BMY,Health Care,Health Care
+BKNG,Consumer Discretionary,Consumer Discretionary
+PH,Industrials,Industrials
+MDT,Health Care,Health Care
+LMT,Industrials,Industrials
+SPGI,Finance,Financials
+COF,Finance,Financials
+PSX,Energy,Energy
+NEM,Basic Materials,Materials
+PDD,Consumer Discretionary,Consumer Discretionary
+CVS,Consumer Staples,Consumer Staples
+MCK,Health Care,Health Care
+ADP,Technology,Technology
+SYK,Health Care,Health Care
+SBUX,Consumer Discretionary,Consumer Discretionary
+LOW,Consumer Discretionary,Consumer Discretionary
+TT,Industrials,Industrials
+SO,Utilities,Utilities
+CME,Finance,Financials
+HCA,Health Care,Health Care
+ABNB,Consumer Discretionary,Consumer Discretionary
+FCX,Basic Materials,Materials
+CEG,Utilities,Utilities
+EQIX,Real Estate,Financials
+PWR,Industrials,Industrials
+MAR,Consumer Discretionary,Consumer Discretionary
+DDOG,Technology,Technology
+ADBE,Technology,Technology
+BNY,Finance,Financials
+DUK,Utilities,Utilities
+MELI,Consumer Discretionary,Consumer Discretionary
+ELV,Health Care,Health Care
+JCI,Industrials,Industrials
+SNPS,Technology,Technology
+HOOD,Finance,Financials
+CDNS,Technology,Technology
+GD,Industrials,Industrials
+MRNA,Health Care,Health Care
+EMR,Technology,Technology
+CSX,Industrials,Industrials
+WMB,Utilities,Utilities
+APP,Technology,Technology
+USB,Finance,Financials
+ICE,Finance,Financials
+HWM,Industrials,Industrials
+WM,Utilities,Utilities
+PNC,Finance,Financials
+VRT,Technology,Technology
+MRSH,Finance,Financials
+MMM,Health Care,Health Care
+HPE,Technology,Technology
+AMT,Real Estate,Financials
+INTU,Technology,Technology
+CTAS,Industrials,Industrials
+UPS,Industrials,Industrials
+LITE,Telecommunications,Communication Services
+EOG,Energy,Energy
+ECL,Consumer Discretionary,Consumer Discretionary
+MCO,Finance,Financials
+REGN,Health Care,Health Care
+MDLZ,Consumer Staples,Consumer Staples
+DASH,Consumer Discretionary,Consumer Discretionary
+BX,Finance,Financials
+TRV,Finance,Financials
+SHW,Consumer Discretionary,Consumer Discretionary
+KKR,Finance,Financials
+ITW,Industrials,Industrials
+CI,Health Care,Health Care
+MSI,Technology,Technology
+CMCSA,Telecommunications,Communication Services
+KMI,Utilities,Utilities
+CL,Consumer Discretionary,Consumer Discretionary
+HLT,Consumer Discretionary,Consumer Discretionary
+ROST,Consumer Discretionary,Consumer Discretionary
+RCL,Consumer Discretionary,Consumer Discretionary
+GM,Industrials,Industrials
+NSC,Industrials,Industrials
+CMI,Industrials,Industrials
+SLB,Energy,Energy
+TGT,Consumer Discretionary,Consumer Discretionary
+BE,Energy,Energy
+NOC,Industrials,Industrials
+ORLY,Consumer Discretionary,Consumer Discretionary
+FDX,Consumer Discretionary,Consumer Discretionary
+RSG,Utilities,Utilities
+AEP,Utilities,Utilities
+APO,Finance,Financials
+HON,Industrials,Industrials
+APD,Basic Materials,Materials
+URI,Consumer Discretionary,Consumer Discretionary
+SPG,Real Estate,Financials
+COR,Health Care,Health Care
+CVNA,Consumer Discretionary,Consumer Discretionary
+DLR,Real Estate,Financials
+MET,Finance,Financials
+GWW,Industrials,Industrials
+TRGP,Utilities,Utilities
+BSX,Health Care,Health Care
+OXY,Energy,Energy
+TDG,Industrials,Industrials
+MPWR,Technology,Technology
+KEYS,Industrials,Industrials
+TEL,Technology,Technology
+AJG,Finance,Financials
+MSTR,Technology,Technology
+ALL,Finance,Financials
+FAST,Consumer Discretionary,Consumer Discretionary
+AFL,Finance,Financials
+AON,Finance,Financials
+NUE,Industrials,Industrials
+OKE,Utilities,Utilities
+CAH,Health Care,Health Care
+PCAR,Industrials,Industrials
+AME,Industrials,Industrials
+TER,Industrials,Industrials
+NXPI,Technology,Technology
+TFC,Finance,Financials
+FANG,Energy,Energy
+D,Utilities,Utilities
+BKR,Consumer Discretionary,Consumer Discretionary
+DVN,Energy,Energy
+FIX,Industrials,Industrials
+PSA,Real Estate,Financials
+GRMN,Industrials,Industrials
+SRE,Utilities,Utilities
+CRH,Industrials,Industrials
+NKE,Consumer Discretionary,Consumer Discretionary
+O,Real Estate,Financials
+EBAY,Consumer Discretionary,Consumer Discretionary
+COHR,Technology,Technology
+TEAM,Technology,Technology
+BDX,Health Care,Health Care
+NDAQ,Finance,Financials
+HUM,Health Care,Health Care
+CIEN,Utilities,Utilities
+VST,Utilities,Utilities
+DAL,Consumer Discretionary,Consumer Discretionary
+EW,Health Care,Health Care
+HONA,Industrials,Industrials
+VYLR,Consumer Staples,Consumer Staples
+A,Industrials,Industrials
+ETR,Utilities,Utilities
+CCEP,Consumer Staples,Consumer Staples
+WAB,Industrials,Industrials
+ADSK,Technology,Technology
+VEEV,Technology,Technology
+PYPL,Industrials,Industrials
+VMRK,Real Estate,Financials
+AZO,Consumer Discretionary,Consumer Discretionary
+F,Industrials,Industrials
+P,Technology,Technology
+ROK,Industrials,Industrials
+XEL,Utilities,Utilities
+STT,Finance,Financials
+TRI,Consumer Discretionary,Consumer Discretionary
+COIN,Finance,Financials
+XYZ,Technology,Technology
+WDAY,Technology,Technology
+KDP,Consumer Staples,Consumer Staples
+FITB,Finance,Financials
+CARR,Industrials,Industrials
+AMP,Finance,Financials
+LHX,Industrials,Industrials
+EXC,Utilities,Utilities
+NTAP,Technology,Technology
+VTR,Real Estate,Financials
+FERG,Miscellaneous,Industrials
+IQV,Health Care,Health Care
+WAT,Industrials,Industrials
+IDXX,Health Care,Health Care
+TWLO,Technology,Technology
+ILMN,Health Care,Health Care
+MSCI,Consumer Discretionary,Consumer Discretionary
+ED,Utilities,Utilities
+AIG,Finance,Financials
+ADM,Consumer Staples,Consumer Staples
+YUM,Consumer Discretionary,Consumer Discretionary
+SYY,Consumer Discretionary,Consumer Discretionary
+LYV,Consumer Discretionary,Consumer Discretionary
+PRU,Finance,Financials
+MCHP,Technology,Technology
+CMG,Consumer Discretionary,Consumer Discretionary
+PAYX,Industrials,Industrials
+ODFL,Industrials,Industrials
+IBKR,Finance,Financials
+TTWO,Technology,Technology
+DHI,Consumer Discretionary,Consumer Discretionary
+CBRE,Finance,Financials
+KR,Consumer Staples,Consumer Staples
+ARES,Finance,Financials
+FLEX,Technology,Technology
+ROP,Industrials,Industrials
+EL,Consumer Discretionary,Consumer Discretionary
+FER,Industrials,Industrials
+ZS,Technology,Technology
+HIG,Finance,Financials
+SKYD,Industrials,Industrials
+PCG,Utilities,Utilities
+PEG,Utilities,Utilities
+CCL,Consumer Discretionary,Consumer Discretionary
+STLD,Industrials,Industrials
+WEC,Utilities,Utilities
+CNC,Health Care,Health Care
+KVUE,Consumer Discretionary,Consumer Discretionary
+BIIB,Health Care,Health Care
+CCI,Real Estate,Financials
+CBOE,Finance,Financials
+MLM,Industrials,Industrials
+ACGL,Finance,Financials
+AXON,Industrials,Industrials
+RMD,Health Care,Health Care
+KMB,Consumer Discretionary,Consumer Discretionary
+IRM,Real Estate,Financials
+HSY,Consumer Staples,Consumer Staples
+EQT,Energy,Energy
+EME,Industrials,Industrials
+TKO,Consumer Discretionary,Consumer Discretionary
+MTD,Industrials,Industrials
+UAL,Consumer Discretionary,Consumer Discretionary
+DXCM,Health Care,Health Care
+EXPE,Consumer Discretionary,Consumer Discretionary
+VMC,Industrials,Industrials
+MTB,Finance,Financials
+ZTS,Health Care,Health Care
+GEHC,Health Care,Health Care
+JBL,Technology,Technology
+HBAN,Finance,Financials
+RJF,Finance,Financials
+IR,Industrials,Industrials
+ALNY,Health Care,Health Care
+NTRS,Finance,Financials
+AEE,Utilities,Utilities
+DG,Consumer Discretionary,Consumer Discretionary
+RDDT,Technology,Technology
+ON,Technology,Technology
+WSM,Consumer Discretionary,Consumer Discretionary
+EXR,Real Estate,Financials
+TDY,Industrials,Industrials
+CTSH,Technology,Technology
+ATO,Utilities,Utilities
+WTW,Finance,Financials
+HPQ,Technology,Technology
+WRB,Finance,Financials
+HAL,Energy,Energy
+VRSN,Technology,Technology
+KHC,Consumer Staples,Consumer Staples
+DTE,Utilities,Utilities
+SYF,Finance,Financials
+WST,Health Care,Health Care
+CFG,Finance,Financials
+OTIS,Technology,Technology
+FE,Utilities,Utilities
+FOXA,Industrials,Industrials
+AWK,Utilities,Utilities
+PPL,Utilities,Utilities
+CNP,Utilities,Utilities
+DOV,Industrials,Industrials
+FFIV,Telecommunications,Communication Services
+CPAY,Consumer Discretionary,Consumer Discretionary
+DGX,Health Care,Health Care
+LH,Health Care,Health Care
+CINF,Finance,Financials
+ECHO,Consumer Discretionary,Consumer Discretionary
+EXPD,Industrials,Industrials
+Q,Technology,Technology
+ULTA,Consumer Discretionary,Consumer Discretionary
+VICI,Real Estate,Financials
+ES,Utilities,Utilities
+HUBB,Technology,Technology
+VLTO,Industrials,Industrials
+FISV,Consumer Discretionary,Consumer Discretionary
+TPL,Energy,Energy
+CHD,Consumer Discretionary,Consumer Discretionary
+CPRT,Consumer Discretionary,Consumer Discretionary
+CASY,Consumer Discretionary,Consumer Discretionary
+XYL,Industrials,Industrials
+LVS,Consumer Discretionary,Consumer Discretionary
+DRI,Consumer Discretionary,Consumer Discretionary
+SMCI,Technology,Technology
+VRSK,Technology,Technology
+FOX,Industrials,Industrials
+PPG,Consumer Discretionary,Consumer Discretionary
+TPR,Consumer Discretionary,Consumer Discretionary
+PFG,Finance,Financials
+RF,Finance,Financials
+IFF,Industrials,Industrials
+DLTR,Consumer Discretionary,Consumer Discretionary
+INCY,Health Care,Health Care
+RL,Industrials,Industrials
+L,Finance,Financials
+JBHT,Industrials,Industrials
+BRO,Finance,Financials
+STZ,Consumer Staples,Consumer Staples
+OMC,Consumer Discretionary,Consumer Discretionary
+GPN,Consumer Discretionary,Consumer Discretionary
+SW,Consumer Discretionary,Consumer Discretionary
+INSM,Health Care,Health Care
+EIX,Utilities,Utilities
+TROW,Finance,Financials
+NRG,Utilities,Utilities
+STE,Health Care,Health Care
+KEY,Finance,Financials
+EXE,Energy,Energy
+DOW,Industrials,Industrials
+PTC,Technology,Technology
+CMS,Utilities,Utilities
+BG,Consumer Staples,Consumer Staples
+PHM,Consumer Discretionary,Consumer Discretionary
+PKG,Consumer Discretionary,Consumer Discretionary
+VTRS,Health Care,Health Care
+NI,Utilities,Utilities
+LYB,Industrials,Industrials
+AMCR,Consumer Discretionary,Consumer Discretionary
+FSLR,Technology,Technology
+LUV,Consumer Discretionary,Consumer Discretionary
+SBAC,Real Estate,Financials
+TSN,Consumer Staples,Consumer Staples
+EVRG,Utilities,Utilities
+BR,Consumer Discretionary,Consumer Discretionary
+SNA,Consumer Discretionary,Consumer Discretionary
+CDW,Consumer Discretionary,Consumer Discretionary
+BBY,Consumer Discretionary,Consumer Discretionary
+NDSN,Industrials,Industrials
+FIS,Consumer Discretionary,Consumer Discretionary
+GPC,Consumer Discretionary,Consumer Discretionary
+CF,Industrials,Industrials
+ZBRA,Industrials,Industrials
+EFX,Finance,Financials
+IEX,Industrials,Industrials
+NWS,Consumer Discretionary,Consumer Discretionary
+LNT,Utilities,Utilities
+ZBH,Health Care,Health Care
+LEN,Consumer Discretionary,Consumer Discretionary
+DD,Industrials,Industrials
+ESS,Real Estate,Financials
+FTV,Industrials,Industrials
+GIS,Consumer Staples,Consumer Staples
+TSCO,Consumer Discretionary,Consumer Discretionary
+RVTY,Industrials,Industrials
+IP,Basic Materials,Materials
+J,Industrials,Industrials
+APA,Energy,Energy
+CHRW,Industrials,Industrials
+FDXF,Consumer Discretionary,Consumer Discretionary
+BALL,Industrials,Industrials
+NWSA,Consumer Discretionary,Consumer Discretionary
+HST,Real Estate,Financials
+ROL,Consumer Discretionary,Consumer Discretionary
+INVH,Finance,Financials
+FICO,Consumer Discretionary,Consumer Discretionary
+BEN,Finance,Financials
+NVR,Consumer Discretionary,Consumer Discretionary
+LDOS,Technology,Technology
+KIM,Real Estate,Financials
+SOLV,Health Care,Health Care
+CRL,Health Care,Health Care
+EG,Finance,Financials
+TYL,Technology,Technology
+GEN,Technology,Technology
+TRMB,Industrials,Industrials
+MAS,Industrials,Industrials
+SWK,Consumer Discretionary,Consumer Discretionary
+AIZ,Finance,Financials
+WY,Real Estate,Financials
+HAS,Consumer Discretionary,Consumer Discretionary
+MAA,Real Estate,Financials
+AKAM,Consumer Discretionary,Consumer Discretionary
+REG,Real Estate,Financials
+GDDY,Technology,Technology
+AVY,Consumer Discretionary,Consumer Discretionary
+SJM,Consumer Staples,Consumer Staples
+ALLE,Consumer Discretionary,Consumer Discretionary
+DOC,Real Estate,Financials
+GL,Finance,Financials
+BAX,Health Care,Health Care
+TXT,Industrials,Industrials
+PNW,Utilities,Utilities
+IT,Consumer Discretionary,Consumer Discretionary
+IVZ,Finance,Financials
+CSGP,Finance,Financials
+LII,Industrials,Industrials
+MKC,Consumer Staples,Consumer Staples
+CHTR,Telecommunications,Communication Services
+GNRC,Consumer Discretionary,Consumer Discretionary
+ALB,Industrials,Industrials
+DVA,Health Care,Health Care
+SWKS,Technology,Technology
+TECH,Health Care,Health Care
+DECK,Consumer Discretionary,Consumer Discretionary
+UHS,Health Care,Health Care
+UDR,Real Estate,Financials
+HRL,Consumer Staples,Consumer Staples
+JKHY,Technology,Technology
+AES,Industrials,Industrials
+ERIE,Finance,Financials
+COO,Health Care,Health Care
+HII,Industrials,Industrials
+FDS,Technology,Technology
+CLX,Consumer Discretionary,Consumer Discretionary
+ALGN,Health Care,Health Care
