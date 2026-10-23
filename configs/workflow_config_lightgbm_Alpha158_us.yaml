@@ -1,15 +1,17 @@
 qlib_init:
-    provider_uri: "data/qlib_bin/us_data"
+    provider_uri: "/home/mlops/quant_qlib_mlops/data/qlib_bin/us_data"
     region: us
     exp_manager:
         class: MLflowExpManager
         module_path: qlib.workflow.expm
         kwargs:
-            uri: "sqlite:///mlflow.db"  #mlflow.db 会生成在你执行 qrun 的当前目录（项目根目录）
-            default_exp_name: "workflow"
+            uri: "sqlite:////home/mlops/quant_qlib_mlops/mlflow.db"  #mlflow.db 会生成在你执行 qrun 的当前目录（项目根目录）
+            default_exp_name: "workflow1"
 
-market: &market all   # 后面的代码里只要写 *market，YAML 就会自动把它替换成 all
-benchmark: &benchmark all   # 是临时方案，后期 补 SPX 数据后，改回。
+# all 表示：使用本地 instruments/all.txt 文件里包含的所有股票
+market: &market all   # 后面的代码里只要写 *market，  YAML就会自动把它替换成 all，
+#benchmark: &benchmark all   # 是临时方案，后期 补 SPX 数据后，改回。
+benchmark: &benchmark SPX    # 已经取得SPX数据
 
 # 数据与特征处理 
 # fit_start_time 到 fit_end_time 是用来计算特征标准化（Z-score）参数的。
