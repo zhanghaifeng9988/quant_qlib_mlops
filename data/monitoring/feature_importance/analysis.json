@@ -1,0 +1,233 @@
+{
+  "windows": [
+    "w1",
+    "w2",
+    "w3",
+    "w4",
+    "w5",
+    "w6",
+    "w7"
+  ],
+  "n_features": 158,
+  "stable_top20": [
+    "STD60"
+  ],
+  "w1_top20_dropped_in_failure_windows": [
+    {
+      "factor": "CORD10",
+      "rank_w1": 20,
+      "rank_w3": 12,
+      "rank_w5": 114
+    },
+    {
+      "factor": "CORR60",
+      "rank_w1": 5,
+      "rank_w3": 22,
+      "rank_w5": 114
+    },
+    {
+      "factor": "KLEN",
+      "rank_w1": 1,
+      "rank_w3": 111,
+      "rank_w5": 114
+    },
+    {
+      "factor": "KSFT2",
+      "rank_w1": 10,
+      "rank_w3": 111,
+      "rank_w5": 60
+    },
+    {
+      "factor": "LOW0",
+      "rank_w1": 9,
+      "rank_w3": 111,
+      "rank_w5": 63
+    },
+    {
+      "factor": "MA20",
+      "rank_w1": 8,
+      "rank_w3": 111,
+      "rank_w5": 114
+    },
+    {
+      "factor": "MAX20",
+      "rank_w1": 3,
+      "rank_w3": 111,
+      "rank_w5": 114
+    },
+    {
+      "factor": "QTLU10",
+      "rank_w1": 19,
+      "rank_w3": 111,
+      "rank_w5": 114
+    },
+    {
+      "factor": "RSQR10",
+      "rank_w1": 7,
+      "rank_w3": 61,
+      "rank_w5": 114
+    },
+    {
+      "factor": "VMA5",
+      "rank_w1": 12,
+      "rank_w3": 111,
+      "rank_w5": 61
+    }
+  ],
+  "top20_by_window": {
+    "w1": [
+      "KLEN",
+      "STD60",
+      "MAX20",
+      "MAX10",
+      "CORR60",
+      "VSTD60",
+      "RSQR10",
+      "MA20",
+      "LOW0",
+      "KSFT2",
+      "VSTD5",
+      "VMA5",
+      "WVMA60",
+      "CORR20",
+      "CORD60",
+      "KLOW2",
+      "WVMA5",
+      "WVMA30",
+      "QTLU10",
+      "CORD10"
+    ],
+    "w2": [
+      "MA20",
+      "VSTD60",
+      "KLEN",
+      "CORR60",
+      "WVMA30",
+      "STD60",
+      "RSV10",
+      "OPEN0",
+      "SUMN10",
+      "MAX5",
+      "KUP2",
+      "WVMA10",
+      "RSQR20",
+      "ROC5",
+      "KMID2",
+      "ROC10",
+      "LOW0",
+      "KSFT",
+      "RESI30",
+      "MAX20"
+    ],
+    "w3": [
+      "STD60",
+      "HIGH0",
+      "IMXD5",
+      "STD10",
+      "RESI10",
+      "WVMA20",
+      "IMAX30",
+      "VMA20",
+      "KUP",
+      "ROC5",
+      "RSQR60",
+      "CORD10",
+      "VSTD20",
+      "IMIN30",
+      "WVMA10",
+      "KLOW2",
+      "VSTD5",
+      "CNTD60",
+      "WVMA60",
+      "RESI30"
+    ],
+    "w4": [
+      "STD60",
+      "IMXD5",
+      "VMA20",
+      "HIGH0",
+      "WVMA20",
+      "CORR20",
+      "STD10",
+      "VSTD60",
+      "ROC5",
+      "CORR60",
+      "STD30",
+      "RSQR10",
+      "WVMA30",
+      "CORD60",
+      "VMA10",
+      "VMA60",
+      "RESI10",
+      "VSTD5",
+      "WVMA60",
+      "WVMA5"
+    ],
+    "w5": [
+      "MAX10",
+      "ROC60",
+      "HIGH0",
+      "IMXD5",
+      "STD60",
+      "VSTD60",
+      "SUMN20",
+      "WVMA10",
+      "MIN20",
+      "STD20",
+      "KLOW2",
+      "RESI60",
+      "RSQR5",
+      "MIN5",
+      "MIN60",
+      "VSUMN10",
+      "IMIN60",
+      "MAX5",
+      "MA5",
+      "VMA20"
+    ],
+    "w6": [
+      "MAX10",
+      "STD60",
+      "KLEN",
+      "VSTD60",
+      "ROC5",
+      "BETA5",
+      "VMA20",
+      "RESI5",
+      "SUMP5",
+      "STD5",
+      "CORR60",
+      "ROC30",
+      "VMA5",
+      "WVMA10",
+      "ROC60",
+      "HIGH0",
+      "IMXD30",
+      "QTLU60",
+      "QTLU10",
+      "SUMN20"
+    ],
+    "w7": [
+      "MAX10",
+      "ROC5",
+      "STD60",
+      "KLEN",
+      "RESI5",
+      "WVMA60",
+      "CORR60",
+      "ROC60",
+      "STD5",
+      "STD30",
+      "KLOW2",
+      "MIN10",
+      "CORR20",
+      "VMA5",
+      "IMAX60",
+      "WVMA30",
+      "RSQR5",
+      "VSTD60",
+      "WVMA20",
+      "IMXD20"
+    ]
+  }
+}

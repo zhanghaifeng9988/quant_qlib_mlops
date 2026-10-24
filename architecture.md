@@ -330,3 +330,36 @@ M2b 采用**逐窗口独立 qrun**，不用 `RollingGen` + `TrainerRM`。理由�
 | W7 | 2011-10-24 → 2023-12-31 | 2024 | 2025-01-01 → 2026-10-16 |
 
 rtype = `ROLL_EX`（扩展窗口，训练起点固定）。
+
+
+## 附录 D：M2 正式关闭与产出总结（2026-10-24）
+
+### D.1 M2 核心目标达成情况
+
+M2 的目标是：**验证 Qlib 训练闭环，打通 MLflow 追踪，并利用 walk-forward 评估模型在不同市场环境下的稳定性。**
+
+- **M2a（单窗口）**：跑通 `qrun`，成功将 LGBModel + Alpha158 训练、预测、回测记录到 MLflow（SQLite 后端），解决文件后端维护模式问题。
+- **M2b（7 窗口）**：完成 W1–W7 的扩展窗口（ROLL_EX）训练。发现 W3（2021）和 W5（2023）IC 为负，验证了模型在不同 regime 下的脆弱性。
+- **M2b-3/4（特征分析）**：完成 7 窗口特征重要性对比与 W2 窗口的 SHAP 分析，定位了“稳定因子”（STD60）与“失效先兆因子”（如 CORR60、MA20）。
+
+### D.2 关键工程决策与踩坑记录
+
+1. **MLflow 后端迁移**：由于 MLflow 3.13+ 限制，放弃 `./mlruns` 文件后端，切换至 SQLite（`sqlite:///mlflow.db`），为 M3 Model Registry 铺路。
+2. **基准切换**：M2a 临时使用 `all` 作为基准导致超额收益失真；M2b 引入 SPX（^GSPC）数据并剔除出训练集，还原真实基准。
+3. **OOM 应对**：W7 训练集最长（12.2 年），叠加 Qoder 抢占内存触发 OOM Kill。通过关闭无关进程、单独重跑解决，验证了 7.6GB 环境下的内存边界。
+4. **模型序列化**：默认 `qrun` 不保存模型对象，在 `task.record` 中追加 `SaveModel`，才使得特征重要性分析和 SHAP 成为可能。
+5. **SHAP 数据对齐**：通过 `pred.pkl` 的索引按需拉取特征，规避了 `dataset` 序列化丢失 `_infer` 缓存的问题。
+
+### D.3 业务洞察（用于 M5 监控设计）
+
+- **模型不可实盘**：7 窗口 IC 均值约 0.0076，标准差 0.0095，W3/W5 出现负 IC。这说明 Alpha158 + LGBM 的基线模型在风格切换年（2021 成长股见顶、2023 AI 行情）会失效。
+- **幸存者偏差**：当前 Universe 为 2026-10 静态快照，离快照越近的窗口（W6/W7）超额收益虚高，不可作为模型能力证据。Point-in-Time Universe 列为二期扩展。
+- **核心因子与漂移**：仅有 `STD60`（60日波动率）在 7 个窗口中持续排名前 20。`CORD10`、`CORR60`、`MA20` 等在 W1 重要，但在 W3/W5 中排名骤降，构成了 M5 监控的“失效先兆”指标。
+- **SHAP 解释**：W2（疫情年）的模型极度依赖极端非线性特征（如 `MA20` 极端高值、`OPEN0` 跳空高开），表现出强烈的“追涨”倾向，这也解释了 W2 超额高但回撤大的原因。
+
+### D.4 产出与状态
+
+- **Configs**：`configs/workflow_config_lightgbm_Alpha158_us.yaml`、`configs/walkforward/w1-w7.yaml`
+- **Scripts**：`m2_generate_walkforward.py`、`m2_run_walkforward.sh`、`m2_feature_importance.py`、`m2_shap_analysis.py`
+- **Monitoring Data**：`data/monitoring/walkforward_summary.json`、`data/monitoring/feature_importance/`（分析 JSON + SHAP 图）
+- **状态**：M2 正式关闭。M3 将基于 7 个 run，挑选相对稳定的模型进行 Registry 注册与 FastAPI 服务化。
