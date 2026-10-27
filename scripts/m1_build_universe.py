@@ -63,6 +63,7 @@ def load_index(path, name):
     if sym_col is None:
         raise SystemExit(f"{name} 找不到 symbol/ticker 列: {list(df.columns)}")
     return set(df[sym_col].map(norm_symbol).dropna())
+# set把规范化后的股票代码列去重成一个集合
 
 # 处理布尔值列的数据，有空值的返回 False，不在白名单中的，返回 False，满足bool 类型的，返回原始值
 def parse_bool(s):

@@ -3951,19 +3951,23 @@ name = "quant-qlib-mlops"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "fastapi" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyqlib" },
     { name = "shap" },
+    { name = "uvicorn" },
     { name = "yfinance" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi", specifier = ">=0.146.0" },
     { name = "numpy", specifier = ">=1.26,<2.0" },
     { name = "pandas", specifier = ">=2.1,<2.3" },
     { name = "pyqlib", specifier = ">=0.9.7,<0.10" },
     { name = "shap", specifier = ">=0.49.1" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
     { name = "yfinance", specifier = ">=1.7.0" },
 ]
 
