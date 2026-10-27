@@ -363,3 +363,21 @@ M2 的目标是：**验证 Qlib 训练闭环，打通 MLflow 追踪，并利用 
 - **Scripts**：`m2_generate_walkforward.py`、`m2_run_walkforward.sh`、`m2_feature_importance.py`、`m2_shap_analysis.py`
 - **Monitoring Data**：`data/monitoring/walkforward_summary.json`、`data/monitoring/feature_importance/`（分析 JSON + SHAP 图）
 - **状态**：M2 正式关闭。M3 将基于 7 个 run，挑选相对稳定的模型进行 Registry 注册与 FastAPI 服务化。
+
+
+## 附录 E：M3 模型注册与 FastAPI 服务化（2026-10-27 封存）
+
+### E.1 目标
+将 Qlib 训练的黑盒模型封装为 MLflow 标准格式，注册到 Model Registry，并提供基于 FastAPI 的批量打分服务，确保推理特征与训练特征完全一致。
+
+### E.2 核心决策与踩坑
+- **Model Registry**：采用 MLflow `pyfunc.PythonModel` 包装 Qlib 模型。因为 Qlib 原生模型存在 `params.pkl` 中且无法直接生成 MLflow 标准签名，必须套壳（Wrapper）并暴露 `predict(df)` 接口。
+- **别名控制**：不使用已废弃的 Stage 概念，改用 MLflow 3.x 的 **Alias**。模型先以 `@candidate` 别名人库，线上服务绑定该别名，实现训练与部署解耦。
+- **FastAPI 启动预热**：在 lifespan 阶段实例化 `Alpha158` Handler，预加载 `.bin` 数据并建立特征计算缓存；同时加载 Registry 中的模型。保证每次请求能在毫秒级完成。
+- **推理数据一致性（Training-Serving Skew）**：线上推理必须走与训练完全一致的 `Alpha158` 特征工程链路。在线推理时，从 `handler.fetch(selector=slice(date, date))` 取单日截面，输入给底层 LightGBM。
+- **索引层级塌缩**：Qlib 的 `fetch` 在只取单日数据时，DataFrame 的列索引（Columns）会从两层 `(feature, factor)` 塌缩为一层 `(factor)`。服务代码中需做 `isinstance(df.columns, pd.MultiIndex)` 兼容判断，否则会报错。
+
+### E.3 产出
+- 脚本：`scripts/m3_register_model.py`（支持 `--run-id` 指定训练窗口注册）、`app/main.py`（推理服务）
+- 注册模型：`us-stock-lgbm-1d`（别名 `@candidate`），描述中包含源 Run 的 IC 值。
+- 接口：`GET /health`、`GET /predict?date=YYYY-MM-DD` 返回按打分降序排列的股票列表。
