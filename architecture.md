@@ -381,3 +381,7 @@ M2 的目标是：**验证 Qlib 训练闭环，打通 MLflow 追踪，并利用 
 - 脚本：`scripts/m3_register_model.py`（支持 `--run-id` 指定训练窗口注册）、`app/main.py`（推理服务）
 - 注册模型：`us-stock-lgbm-1d`（别名 `@candidate`），描述中包含源 Run 的 IC 值。
 - 接口：`GET /health`、`GET /predict?date=YYYY-MM-DD` 返回按打分降序排列的股票列表。
+
+
+
+
