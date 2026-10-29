@@ -1,0 +1,12 @@
+README.md
+.venv
+.git
+data/
+mlruns/
+mlflow.db
+__pycache__
+*.pyc
+logs/
+docs/
+k8s/
+README.md
