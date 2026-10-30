@@ -9,4 +9,4 @@ __pycache__
 logs/
 docs/
 k8s/
-README.md
+architecture.md

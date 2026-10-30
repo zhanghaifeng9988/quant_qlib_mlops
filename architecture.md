@@ -385,5 +385,43 @@ M2 的目标是：**验证 Qlib 训练闭环，打通 MLflow 追踪，并利用 
 - 接口：`GET /health`、`GET /predict?date=YYYY-MM-DD` 返回按打分降序排列的股票列表。
 
 
+## 附录 F：M4 轻量化服务与本地容器化（2026-10-30 封存）
+
+### F.1 目标与架构重构说明
+M4 的目标是将推理服务容器化，并解决此前在本地 K8s（kind）部署时引发的严重资源问题。
+**核心重构**：废弃了原定“在 FastAPI 启动时使用 Alpha158 实时计算特征”的重型方案。该方案在 K8s 限制 4Gi 内存时被 `OOMKilled`（Exit Code 137），根本原因是加载 15 年全量历史数据并实时计算的特征工程与模型推理高度耦合。
+**最终架构**：彻底解耦为“离线特征生成（Parquet）+ 在线轻量加载”。这也符合真实量化私募中特征计算与推理解耦的工业标准。
+
+### F.2 核心实现
+1. **轻量级 Feature Store 雏形**
+   - 脚本：`scripts/m4_generate_features.py`
+   - 逻辑：使用 Qlib `Alpha158` 计算近 2.5 年（`2024-01-01` 至 `2026-10-16`）的特征数据，并存储为 `data/features/features_latest.parquet`（232MB）。
+   - 目的：覆盖因子的历史回看窗口（如 60 日），同时避免内存爆掉。
+2. **FastAPI 极简改造**
+   - 移除 `Alpha158` 和 `qlib.data` 的实例化。
+   - 启动时直接用 Pandas 加载 Parquet 文件，截取目标日期的截面数据。
+   - 效果：启动时间从十几秒降至 1 秒以内，内存占用降至百兆级别。
+3. **Docker 多阶段构建与极致瘦身**
+   - **多阶段**：在 `builder` 阶段安装依赖并清理死重包，只把 `.venv` 复制到运行阶段，彻底减小镜像分层体积。
+   - **剔除依赖**：在 `uv sync` 时通过 `--no-install-package` 屏蔽了 Jupyter 全家桶；在 builder 中物理删除 `llvmlite`、`numba`、`yfinance`、`jedi` 等运行时无效的包。
+   - **精确 COPY**：废弃 `COPY . .`，只复制 `app/` 目录，防止无用文件进入镜像。
+   - **最终镜像**：`quant-qlib-api:v6`（约 1.2GB）。
+
+### F.3 关键踩坑记录
+1. **K8s 目录映射**：kind 节点无法直接读取宿主机目录，需在 `kind create cluster` 时通过 `extraMounts` 将项目根目录映射到节点容器内，否则 `hostPath` 会卡住。
+2. **MLflow 绝对路径陷阱**：由于 SQLite 里记录的是宿主机的绝对路径（`/home/mlops/...`），在 Docker 中 `-v` 挂载时必须映射到相同的绝对路径，否则 MLflow 会报 `No such artifact: ''`。
+3. **系统依赖缺失（`libgomp1`）**：极度精简的 `python:3.11-slim` 基础镜像缺失了 OpenMP 运行库。在加载 LightGBM 模型时报 `OSError: libgomp.so.1: cannot open shared object file`。必须在 Stage 2 的 Dockerfile 中加上 `apt-get install libgomp1`。
+
+### F.4 产出清单
+- `scripts/m4_generate_features.py`：离线特征生成脚本。
+- `app/main.py`：轻量化 FastAPI 服务。
+- `Dockerfile`：多阶段极简构建文件（含 `libgomp1` 修复）。
+- `docker-compose.yml`（M5 底座）：用于启动 PostgreSQL 和 Grafana。
+
+### F.5 后续演进（AWS CI/CD 铺垫）
+在将本服务打包上云（AWS ECS/EC2）后，可利用 GitHub Actions 补充持续训练（CT）流水线：
+1. 定时拉取最新行情追加至 `.bin`。
+2. 增量计算最新的 Parquet 特征。
+3. 重新训练并评估，通过则注册至 MLflow Registry（如 `@production`），FastAPI 服务因绑定别名实现无缝模型热更新。
 
 
