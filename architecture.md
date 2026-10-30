@@ -252,6 +252,8 @@ uv run python scripts/m1_write_manifest.py
 uv run python scripts/m1_acceptance.py
 
 
+M4 架构修正（2026-10-30）：
+原计划在 FastAPI 内实时计算 Alpha158，但在 K8s 部署时遭遇 OOM。深究原因，是因为特征计算与模型服务高度耦合，且加载了 15 年全量历史数据。现修正为“离线特征计算（Parquet）+ 在线轻量加载”。此修正彻底解决了内存瓶颈，也是真实量化私募的标准架构（特征与推理分离）。
 
 ---
 
