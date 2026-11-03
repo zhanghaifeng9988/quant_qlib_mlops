@@ -1,0 +1,56 @@
+version: '3.8'
+
+volumes: 
+  grafana_data: {}
+  postgres_data: {}
+
+networks:
+  front-tier:
+  back-tier:
+
+services:
+  db:
+    image: postgres:18
+    container_name: mlops-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: mlops
+      POSTGRES_PASSWORD: mlops123
+      POSTGRES_DB: metrics
+    ports:         
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - back-tier
+
+  adminer:
+    image: adminer
+    container_name: mlops-adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - back-tier
+      - front-tier  
+
+  grafana:
+    image: grafana/grafana-enterprise:11.2.0
+    container_name: mlops-grafana
+    user: "472"
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - /home/mlops/quant_qlib_mlops/monitoring/config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - /home/mlops/quant_qlib_mlops/monitoring/config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - /home/mlops/quant_qlib_mlops/monitoring/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - back-tier
+      - front-tier
+    restart: always
+
+
+    

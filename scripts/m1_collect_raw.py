@@ -11,7 +11,7 @@ import yaml
 import yfinance as yf
 import os
 
-proxy = 'http://172.21.160.1:7892' # 代理设置
+proxy = 'http://172.21.160.1:7890' # 代理设置
 os.environ['HTTP_PROXY'] = proxy 
 os.environ['HTTPS_PROXY'] = proxy 
 

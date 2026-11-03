@@ -1,0 +1,18 @@
+
+apiVersion: 1
+
+datasources:
+  - name: MLOps-Metrics
+    uid: mlops-pg # Unique identifier for the data source
+    type: postgres
+    access: proxy
+    url: db:5432
+    database: metrics
+    user: mlops
+    secureJsonData:
+      password: mlops123
+    jsonData:
+      sslmode: 'disable'
+      postgresVersion: 1800
+      timescaledb: false
+

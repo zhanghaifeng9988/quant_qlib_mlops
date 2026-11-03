@@ -33,16 +33,21 @@ def health_check():
 
 @app.get("/predict")
 def predict(date: str = Query(..., description="预测日期，格式 YYYY-MM-DD")):
-    features_df = state.get("features_df")
+    # features_df = state.get("features_df")
     model = state.get("model")
-    
-    if features_df is None or model is None:
-        raise HTTPException(status_code=500, detail="Model or Features not initialized")
+    if model is None:
+        raise HTTPException(status_code=500, detail="Model not initialized")
+
+    #if features_df is None or model is None:
+        #raise HTTPException(status_code=500, detail="Model or Features not initialized")
 
     try:
         # 直接从 Pandas 内存中截取当天的特征
         target_date = pd.Timestamp(date)
         
+         # 🔥 每次请求时，重新读取 Parquet 文件（Pandas 读 200MB 的 Parquet 只需几十毫秒，完全没压力）
+        features_df = pd.read_parquet(FEATURES_PATH)
+
         # 我们的 Parquet 索引是 MultiIndex (datetime, instrument)
         if target_date not in features_df.index.get_level_values("datetime"):
              raise HTTPException(status_code=404, detail=f"No features available for {date}")
