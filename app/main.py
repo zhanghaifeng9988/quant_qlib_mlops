@@ -3,6 +3,12 @@ from pathlib import Path
 import pandas as pd
 import mlflow.pyfunc
 from fastapi import FastAPI, HTTPException, Query
+import os
+
+# 从环境变量读取模型别名，默认值为 "candidate"
+MODEL_ALIAS = os.getenv("MODEL_ALIAS", "candidate")
+MODEL_URI = f"models:/us-stock-lgbm-1d@{MODEL_ALIAS}"
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 TRACKING_URI = f"sqlite:///{PROJECT_ROOT}/mlflow.db"

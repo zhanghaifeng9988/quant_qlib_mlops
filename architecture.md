@@ -425,3 +425,30 @@ M4 的目标是将推理服务容器化，并解决此前在本地 K8s（kind）
 3. 重新训练并评估，通过则注册至 MLflow Registry（如 `@production`），FastAPI 服务因绑定别名实现无缝模型热更新。
 
 
+---
+
+## 附录 G：M5 监控与告警闭环（2026-11-04 封存）
+
+### G.1 目标与架构设计
+M5 的核心目标是解决“模型静默失效”问题。架构采用：**离线批处理（Python） + 指标存储（PostgreSQL） + 可视化与告警（Grafana + Webhook）**。
+
+### G.2 核心模块与产出
+- **指标记录**：
+  - `scripts/m5_record_metrics.py`：初始化监控表，导入历史 7 窗口 IC/RankIC。
+  - `scripts/m5_prediction_nextday_return_record.py`：每日收盘后拉取 FastAPI 预测，写入 `predictions` 表。
+- **漂移计算（PSI）**：
+  - `scripts/m5_calculate_psi.py`：**纠正了统计陷阱**，采用“滑动窗口截面均值对比法”（当前 30 天均值 vs 2024 全年均值），有效过滤单日黑天鹅噪音。
+- **可视化（Grafana）**：
+  - 模型健康度：7 窗口 IC / Rank IC 柱状图（直观展示 W3/W5 失效）。
+  - 每日预测：动态 SQL（`MAX(predict_date)`）展示最新 Top 20 股票。
+  - 数据漂移：对数坐标展示 PSI Top 10，背景红黄绿预警。
+- **告警触发**：
+  - 当 PSI > 0.25 时，脚本自动向 Webhook 发送告警（如钉钉机器人）。
+
+### G.3 实战业务验证
+在 2026 年 11 月的美股阴跌行情中，监控系统成功捕捉到 `CNTP60`、`MAX60` 等动量因子 PSI 飙升至 **8.23**。系统触发 Webhook 告警，提示模型失效。随后基于告警，执行了 W8 窗口的增量重训，新模型（W8）超额收益达 15.99%，回撤收缩至 -9.04%，验证了“监控-告警-重训”闭环的有效性。
+
+### G.4 产出清单
+- `docker-compose.yml`（PG + Grafana + Adminer）
+- `monitoring/dashboards/mlops_dashboard.json`（Grafana 看板）
+- `scripts/m5_*.py`（三套批处理脚本）

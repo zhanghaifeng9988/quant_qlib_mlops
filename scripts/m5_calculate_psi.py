@@ -24,6 +24,8 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import psycopg
+import requests
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
 
@@ -185,6 +187,30 @@ def main():
                     copy.write_row(v)
                     
     logging.info("PSI metrics inserted successfully.")  
+
+    # --- 告警逻辑 ---
+    max_psi_feature = psi_results[0]["feature_name"]
+    max_psi_value = psi_results[0]["psi"]
+    
+    if max_psi_value > 0.25:
+        alert_msg = f"🚨 模型失效预警！特征 [{max_psi_feature}] 发生严重漂移，PSI={max_psi_value:.2f}，超过红线 0.25。请检查市场环境并准备重训！"
+        logging.warning(alert_msg)
+        
+        # 模拟发送 Webhook（如果你有钉钉机器人地址，可以替换下面的 URL）
+        webhook_url = "https://httpbin.org/post" # 用这个免费的测试接口
+        payload = {"msgtype": "text", "text": {"content": alert_msg}}
+        
+        try:
+            resp = requests.post(webhook_url, json=payload, timeout=5)
+            logging.info(f"Webhook alert sent, status code: {resp.status_code}")
+            
+            # 打印服务器收到的内容
+            res_json = resp.json()
+            print("\n=== Webhook 服务器收到的内容 ===")
+            print(res_json.get("json"))
+            print("=================================\n")
+        except Exception as e:
+            logging.error(f"Failed to send webhook: {e}")
 
 if __name__ == "__main__":
     main()
