@@ -1,7 +1,5 @@
-
 #!/usr/bin/env python
 """增量更新日线数据"""
-import json
 import time
 from datetime import date, timedelta
 from pathlib import Path
@@ -9,19 +7,29 @@ import pandas as pd
 import yaml
 import yfinance as yf
 import os
+import logging
 
-proxy = 'http://172.21.160.1:7890' # 代理设置
+proxy = 'http://172.21.160.1:7890'
 os.environ['HTTP_PROXY'] = proxy 
 os.environ['HTTPS_PROXY'] = proxy 
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUT = PROJECT_ROOT / "data" / "raw" / "us_daily"
 UNIVERSE = PROJECT_ROOT / "data" / "universe" / "universes.yaml"
+LOG_DIR = PROJECT_ROOT / "data" / "quality_logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+LOG_FILE = LOG_DIR / "data_quality.log"
 
-# 每次更新：从 10 天前开始拉取（自然日），自动覆盖最近的交易日
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s]: %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+
 START = (date.today() - timedelta(days=3)).isoformat()
-# yfinance 的 end 是排他（exclusive）的，所以往后推 1 天，确保能拉到今天的最新数据
 END = (date.today() + timedelta(days=1)).isoformat()
 
 def normalize(symbol: str) -> str:
@@ -34,8 +42,7 @@ def main():
     
     print(f"[update] fetching {len(symbols)} symbols from {START} to {END}")
     
-    # 按 50 只一批下载
-    BATCH_SIZE = 20
+    BATCH_SIZE = 50
     for i in range(0, len(symbols), BATCH_SIZE):
         batch = symbols[i:i+BATCH_SIZE]
         print(f"\n[download] batch {i//BATCH_SIZE + 1}: {len(batch)} symbols")
@@ -43,14 +50,11 @@ def main():
         df = yf.download(batch, start=START, end=END, auto_adjust=False, group_by="ticker", threads=False, progress=False)
         
         if df.empty:
-            print("  [warn] df is empty, skip this batch")
             continue
 
         for sym in batch:
-            # 1. 提取单只股票数据
             if isinstance(df.columns, pd.MultiIndex):
                 if sym not in df.columns.levels[0]:
-                    print(f"  [skip] {sym} not in downloaded data")
                     continue
                 sub = df[sym]
             else:
@@ -58,31 +62,41 @@ def main():
                 
             sub = sub.dropna(how="all")
             if sub.empty:
-                print(f"  [skip] {sym} has no valid rows (empty)")
                 continue
             
-            # 2. 整理数据
             sub = sub.reset_index()
             sub.columns = [str(c).lower().replace(" ", "_") for c in sub.columns]
             
             if "adj_close" not in sub.columns or "close" not in sub.columns:
-                print(f"  [skip] {sym} missing adj_close or close columns")
                 continue
                 
             sub["factor"] = sub["adj_close"] / sub["close"]
             sub["symbol"] = sym
+            
+            # 记录过滤前的长度和日期
+            original_len = len(sub)
+            original_dates = set(sub["date"].astype(str))
+            
+            # 🔥 共享数据质量标准：与 data_quality_check.py 保持绝对一致
+            sub = sub.dropna(subset=["open", "high", "low", "close"])
+            sub = sub[(sub["close"] > 0) & (sub["volume"] > 0)]
+            
+            if len(sub) < original_len:
+                # 找出被删掉的日期并写入日志
+                dropped_dates = original_dates - set(sub["date"].astype(str))
+                for d in dropped_dates:
+                    logging.warning(f"[增量清洗] {sym} 丢弃日期 {d} (OHLC缺失或价格/成交量为0)")
+            
+            if sub.empty:
+                continue
+                
             sub = sub[["date", "symbol", "open", "high", "low", "close", "volume", "factor"]]
             
-            # 3. 追加写入原有 CSV
             target_csv = OUT / f"{sym}.csv"
             if target_csv.exists():
                 old_df = pd.read_csv(target_csv)
-                
-                # 🔥 强制统一时间类型（都转为 YYYY-MM-DD 字符串）
                 old_df["date"] = pd.to_datetime(old_df["date"]).dt.strftime("%Y-%m-%d")
                 sub["date"] = pd.to_datetime(sub["date"]).dt.strftime("%Y-%m-%d")
-                
-                # 合并去重（按 date）
                 combined = pd.concat([old_df, sub]).drop_duplicates(subset=["date"]).sort_values("date")
                 combined.to_csv(target_csv, index=False)
                 print(f"  [ok] {sym} updated, last date: {combined['date'].max()}")
