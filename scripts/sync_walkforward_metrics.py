@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 【用途说明】
-重训后同步单个最新窗口（如 W8）的指标入库。
+重训后同步单个最新窗口（如 W9）的指标入库。
 自动从 MLflow 抓取最新跑完的 run，追加写入 PostgreSQL 的 walkforward_metrics 表。
 """
 import logging

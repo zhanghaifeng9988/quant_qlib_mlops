@@ -1,6 +1,6 @@
 {
   "snapshot_date": "2026-10-19",
-  "generated_at": "2026-10-22T05:29:01.420474+00:00",
+  "generated_at": "2026-11-06T02:31:25.795663+00:00",
   "universe_snapshot_id": "us_2026-10-19_dev500",
   "target_universe_count": 518,
   "dev_universe_count": 500,
@@ -13,8 +13,8 @@
     "provider_uri": "data/qlib_bin/us_data",
     "instrument_count": 500,
     "calendar_start": "2011-10-24",
-    "calendar_end": "2026-10-20",
-    "calendar_days": 3769,
+    "calendar_end": "2026-11-05",
+    "calendar_days": 3781,
     "fields": [
       "open",
       "high",
@@ -23,14 +23,9 @@
       "volume",
       "factor"
     ],
-    "features_sha256": "b0370beb6273f03f9d5efc304e395861e9115c3c15518072705c141a8f9ea581",
-    "instruments_sha256": "776224bc3321add31493d12f30fdacf53073c1cfc683aa257e76cd14149c255f",
-    "calendars_sha256": "e490f5e54d42acb3442a256bf1c50bf9ead144e395b232289791bbf8f0c8e885",
-    "benchmark": {
-      "symbol": "SPX",
-      "source": "yfinance ^GSPC",
-      "note": "features in features/spx/, excluded from instruments/all.txt"
-    }
+    "features_sha256": "4a591c688e6a076268624d076b69cab2ee79d32383207f85c0b438af6ef05b66",
+    "instruments_sha256": "07b7d57d6196359a39c8c1bdaca26ac76ef275e4036825260a9898fa0756c245",
+    "calendars_sha256": "5421016fc85c54ec1a0369b0765e87256fc96ef0d386900960d0a44740fc91e9"
   },
   "sources": {
     "tickers": "https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/data/v2/tickers.csv",

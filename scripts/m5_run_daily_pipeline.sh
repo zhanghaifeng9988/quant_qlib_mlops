@@ -34,6 +34,9 @@ echo "▶️ [4/8] 正在清理基准数据 SPX..."
 grep -vE "^SPX[[:space:]]" "$PROJECT_ROOT/data/qlib_bin/us_data/instruments/all.txt" > /tmp/all_no_spx.txt
 mv /tmp/all_no_spx.txt "$PROJECT_ROOT/data/qlib_bin/us_data/instruments/all.txt"
 
+echo "▶️ [4.5/8] 正在更新数据血缘 manifest... 以后每天数据更新完，户口本（manifest）都是最新的"
+uv run python scripts/m1_write_manifest.py
+
 # 5. 离线计算最新特征 (Parquet)
 echo "▶️ [5/8] 正在生成最新特征 Parquet 文件..."
 uv run python scripts/m4_generate_features.py

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-"""M1 关闭，验收脚本：数据可读、manifest 一致、内存安全。"""
+"""M1 关闭，验收脚本：数据可读、manifest 一致、内存安全。
+读取 manifest，核对日历天数是否匹配、instruments 数量对不对、抽三只股票拉取数据看有没有缺失，并检查内存峰值。
+"""
+
 import json
 import resource
 import sys

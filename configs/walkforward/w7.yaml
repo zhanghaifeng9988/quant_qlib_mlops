@@ -11,7 +11,7 @@ market: all
 benchmark: SPX
 data_handler_config: &id001
   start_time: '2011-10-24'
-  end_time: '2026-11-04'
+  end_time: '2026-11-06'
   fit_start_time: '2011-10-24'
   fit_end_time: '2023-12-31'
   instruments: all
