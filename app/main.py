@@ -12,7 +12,7 @@ MODEL_URI = f"models:/us-stock-lgbm-1d@{MODEL_ALIAS}"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 TRACKING_URI = f"sqlite:///{PROJECT_ROOT}/mlflow.db"
-MODEL_URI = "models:/us-stock-lgbm-1d@candidate"
+# MODEL_URI = "models:/us-stock-lgbm-1d@candidate"
 FEATURES_PATH = PROJECT_ROOT / "data" / "features" / "features_latest.parquet"
 
 state = {}
@@ -52,7 +52,8 @@ def predict(date: str = Query(..., description="预测日期，格式 YYYY-MM-DD
         target_date = pd.Timestamp(date)
         
          # 🔥 每次请求时，重新读取 Parquet 文件（Pandas 读 200MB 的 Parquet 只需几十毫秒，完全没压力）
-        features_df = pd.read_parquet(FEATURES_PATH)
+        # features_df = pd.read_parquet(FEATURES_PATH)
+        features_df = state["features_df"]
 
         # 我们的 Parquet 索引是 MultiIndex (datetime, instrument)
         if target_date not in features_df.index.get_level_values("datetime"):
