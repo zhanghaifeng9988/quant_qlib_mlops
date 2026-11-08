@@ -1,0 +1,42 @@
+{
+  "snapshot_date": "2026-10-19",
+  "generated_at": "2026-11-07T10:52:23.029265+00:00",
+  "universe_snapshot_id": "us_2026-10-19_dev499",
+  "target_universe_count": 517,
+  "dev_universe_count": 499,
+  "dev_universe_rule": "top 500 by market_cap from target_universe",
+  "industry_mapping": {
+    "file": "data/universe/industry_mapping.csv",
+    "sha256": "e403e47b7ae2ea287d71abdc026cb4c43fa0733b62005ac6eef3995c8d690f9d"
+  },
+  "qlib_data": {
+    "provider_uri": "data/qlib_bin/us_data",
+    "instrument_count": 499,
+    "calendar_start": "2011-10-24",
+    "calendar_end": "2026-11-06",
+    "calendar_days": 3782,
+    "fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "factor"
+    ],
+    "features_sha256": "9d5f166ba85575177b34b57161d48b8f5eeee4772839975544975c8ed034d72a",
+    "instruments_sha256": "4d953397bc4d0b0c791e8d477b2f24c56865f7a9140ed392d392581dd72b590c",
+    "calendars_sha256": "505322352196a5958d0c5a123cd1c8e76d7bd89233589f32a484a462aa4ae8c9"
+  },
+  "sources": {
+    "tickers": "https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/data/v2/tickers.csv",
+    "nasdaq100": "https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv",
+    "dowjones": "https://yfiua.github.io/index-constituents/constituents-dowjones.csv"
+  },
+  "lineage": {
+    "run_id": "baseline_46a10bbb7514",
+    "parent_run_id": null,
+    "status": "baseline",
+    "recorded_at": "2026-11-07T10:52:23.029265+00:00",
+    "history_file": "lineage/runs/baseline_46a10bbb7514.json"
+  }
+}
