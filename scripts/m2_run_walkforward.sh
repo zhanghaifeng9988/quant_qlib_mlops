@@ -2,7 +2,8 @@
 # M2b-2: 逐窗口串行 qrun，记录 run_id，失败不中断
 set -uo pipefail
 
-PROJECT_ROOT="/home/mlops/quant_qlib_mlops"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 CFG_DIR="$PROJECT_ROOT/configs/walkforward"
 LOG_DIR="$PROJECT_ROOT/logs/walkforward"
 RUN_MAP="$LOG_DIR/run_ids.txt"

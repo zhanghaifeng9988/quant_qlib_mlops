@@ -6,6 +6,7 @@
 会自动抓取 MLflow 中最近的 N 个 FINISHED run，全量覆盖 PG 的 walkforward_metrics 表。
 不影响 predictions, drift_metrics, daily_ic_metrics 等其他监控表。
 """
+from pathlib import Path
 import logging
 import pandas as pd
 from mlflow.tracking import MlflowClient
@@ -13,10 +14,13 @@ from sqlalchemy import create_engine
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
 
-TRACKING_URI = "sqlite:////home/mlops/quant_qlib_mlops/mlflow.db"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+MLFLOW_DB_PATH = PROJECT_ROOT / "mlflow.db"
+TRACKING_URI = f"sqlite:///{MLFLOW_DB_PATH.as_posix()}"
 DB_URI = "postgresql://mlops:mlops123@localhost:5432/metrics"
 EXPERIMENT_NAME = "america_stock_strategy"
-# 🔥 指定你要抓取的最新 run 数量（目前是 W1-W9，所以是 9）
+
+#  指定你要抓取的最新 run 数量（目前是 W1-W9，所以是 9）
 NUM_WINDOWS = 9
 
 def main():
