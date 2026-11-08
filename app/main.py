@@ -4,6 +4,7 @@ import pandas as pd
 import mlflow.pyfunc
 from fastapi import FastAPI, HTTPException, Query
 import os
+import mlflow
 
 # 从环境变量读取模型别名，默认值为 "candidate"
 MODEL_ALIAS = os.getenv("MODEL_ALIAS", "candidate")
@@ -12,7 +13,7 @@ MODEL_URI = f"models:/us-stock-lgbm-1d@{MODEL_ALIAS}"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 TRACKING_URI = f"sqlite:///{PROJECT_ROOT}/mlflow.db"
-# MODEL_URI = "models:/us-stock-lgbm-1d@candidate"
+mlflow.set_tracking_uri(TRACKING_URI)
 FEATURES_PATH = PROJECT_ROOT / "data" / "features" / "features_latest.parquet"
 
 state = {}
@@ -49,9 +50,20 @@ def predict(date: str = Query(..., description="预测日期，格式 YYYY-MM-DD
 
     try:
         # 直接从 Pandas 内存中截取当天的特征
-        target_date = pd.Timestamp(date)
-        
-         # 🔥 每次请求时，重新读取 Parquet 文件（Pandas 读 200MB 的 Parquet 只需几十毫秒，完全没压力）
+        # target_date = pd.Timestamp(date)
+        try:
+            target_date = pd.Timestamp(
+                pd.to_datetime(date, format="%Y-%m-%d", errors="raise")
+            )
+
+            if target_date.strftime("%Y-%m-%d") != date:
+                raise ValueError("Invalid date format")
+        except (ValueError, TypeError):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid date format. Expected YYYY-MM-DD"
+            )
+         # 每次请求时，重新读取 Parquet 文件（Pandas 读 200MB 的 Parquet 只需几十毫秒，完全没压力）
         # features_df = pd.read_parquet(FEATURES_PATH)
         features_df = state["features_df"]
 
@@ -72,5 +84,16 @@ def predict(date: str = Query(..., description="预测日期，格式 YYYY-MM-DD
         
         return {"date": date, "count": len(result), "predictions": result}
         
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    #except Exception as e:
+        #raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException:
+        raise
+
+    except Exception:
+        import logging
+        logging.exception("Prediction failed")
+
+        raise HTTPException(
+            status_code=500,
+            detail="Prediction failed. Check service logs."
+        )
