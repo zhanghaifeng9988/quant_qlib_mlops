@@ -4,7 +4,7 @@ sources:
   nasdaq100: https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv
   dowjones: https://yfiua.github.io/index-constituents/constituents-dowjones.csv
 target_universe:
-  count: 518
+  count: 517
   symbols:
   - A
   - AAPL
@@ -286,7 +286,7 @@ target_universe:
   - KMI
   - KO
   - KR
-  - KVUE
+  #- KVUE 只有10月30日的交易数据，该股票已经于26年11 月 2 日 被Kimberly-Clark 完成收购，当天，Kenvue 向纽交所申请在当日开盘前暂停 KVUE 交易，并启动退市程序。
   - L
   - LDOS
   - LEN
@@ -525,8 +525,8 @@ target_universe:
   - ZS
   - ZTS
 dev_universe:
-  count: 500
-  rule: top 500 by market_cap from target_universe
+  count: 499
+  rule: top 499 by market_cap from target_universe
   symbols:
   - NVDA
   - AAPL
@@ -831,7 +831,7 @@ dev_universe:
   - STLD
   - WEC
   - CNC
-  - KVUE
+  #- KVUE 只有10月30日的交易数据，该股票已经于26年11 月 2 日 被Kimberly-Clark 完成收购，当天，Kenvue 向纽交所申请在当日开盘前暂停 KVUE 交易，并启动退市程序。
   - BIIB
   - CCI
   - CBOE

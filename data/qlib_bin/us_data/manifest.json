@@ -1,9 +1,9 @@
 {
   "snapshot_date": "2026-10-19",
-  "generated_at": "2026-11-06T02:31:25.795663+00:00",
-  "universe_snapshot_id": "us_2026-10-19_dev500",
-  "target_universe_count": 518,
-  "dev_universe_count": 500,
+  "generated_at": "2026-11-07T10:52:23.029265+00:00",
+  "universe_snapshot_id": "us_2026-10-19_dev499",
+  "target_universe_count": 517,
+  "dev_universe_count": 499,
   "dev_universe_rule": "top 500 by market_cap from target_universe",
   "industry_mapping": {
     "file": "data/universe/industry_mapping.csv",
@@ -11,10 +11,10 @@
   },
   "qlib_data": {
     "provider_uri": "data/qlib_bin/us_data",
-    "instrument_count": 500,
+    "instrument_count": 499,
     "calendar_start": "2011-10-24",
-    "calendar_end": "2026-11-05",
-    "calendar_days": 3781,
+    "calendar_end": "2026-11-06",
+    "calendar_days": 3782,
     "fields": [
       "open",
       "high",
@@ -23,9 +23,9 @@
       "volume",
       "factor"
     ],
-    "features_sha256": "4a591c688e6a076268624d076b69cab2ee79d32383207f85c0b438af6ef05b66",
-    "instruments_sha256": "07b7d57d6196359a39c8c1bdaca26ac76ef275e4036825260a9898fa0756c245",
-    "calendars_sha256": "5421016fc85c54ec1a0369b0765e87256fc96ef0d386900960d0a44740fc91e9"
+    "features_sha256": "9d5f166ba85575177b34b57161d48b8f5eeee4772839975544975c8ed034d72a",
+    "instruments_sha256": "4d953397bc4d0b0c791e8d477b2f24c56865f7a9140ed392d392581dd72b590c",
+    "calendars_sha256": "505322352196a5958d0c5a123cd1c8e76d7bd89233589f32a484a462aa4ae8c9"
   },
   "sources": {
     "tickers": "https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/data/v2/tickers.csv",
