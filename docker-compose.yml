@@ -1,5 +1,4 @@
-version: '3.8'
-
+# version: '3.8'
 volumes: 
   grafana_data: {}
   postgres_data: {}
@@ -53,4 +52,29 @@ services:
     restart: always
 
 
-    
+  api:
+    image: quant-qlib-api:v9
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: quant-qlib-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      MODEL_ALIAS: candidate
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./data:/app/data
+      - ./mlflow.db:/app/mlflow.db
+      - ./mlruns:/home/mlops/quant_qlib_mlops/mlruns
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
