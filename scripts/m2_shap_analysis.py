@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 import shap
 from mlflow import artifacts as mlflow_artifacts
-from mlflow.tracking import MlflowClient
 import qlib
 from qlib.constant import REG_US
 from qlib.data import D
@@ -41,7 +40,6 @@ def main():
     rid = run_ids["w2"]
     print(f"[w2] run_id={rid}")
 
-    # client = MlflowClient(tracking_uri=TRACKING_URI)
     feature_names = get_feature_names()
 
     # 2. 加载模型
@@ -107,9 +105,9 @@ def main():
     # 尝试对齐数据
     try:
         X = df.loc[target_index].values
-    except KeyError as e:
+    except KeyError:
         # 如果仍然报错，改用 merge 关联
-        print(f"[debug] direct loc failed, trying merge...")
+        print("[debug] direct loc failed, trying merge...")
         # 把 df 重置索引，合并后再取
         df_reset = df.reset_index()
         target_df = pd.DataFrame(index=target_index).reset_index()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # 负责建表、写入 7 窗口回测指标、测试历史预测。
 """M5: 原生 psycopg 驱动，初始化数据库并写入 M2 指标和 API 预测记录。"""
-import datetime
 import json
 import logging
 import requests
