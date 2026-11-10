@@ -205,7 +205,12 @@ echo "✅ Manifest 更新完成。"
 # 5. 生成特征 Parquet
 # --------------------------------------------------
 echo "▶️ [5/8] 正在生成最新特征 Parquet 文件..."
-uv run python scripts/m4_generate_features.py
+
+if ! uv run python scripts/m4_generate_features.py; then
+    echo "❌ 特征生成失败，终止每日流水线。" >&2
+    exit 1
+fi
+
 echo "✅ 特征生成完成。"
 
 # --------------------------------------------------
