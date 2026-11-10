@@ -4,7 +4,7 @@
 import logging
 import os
 from pathlib import Path
-
+from db_config import DB_CONN_INFO
 import numpy as np
 import pandas as pd
 import psycopg
@@ -22,10 +22,6 @@ FEATURES_PATH = (
     PROJECT_ROOT / "data" / "features" / "features_latest.parquet"
 )
 
-DB_CONN_INFO = (
-    "host=localhost port=5432 dbname=metrics "
-    "user=mlops password=mlops123"
-)
 
 BASE_START = "2024-01-01"
 BASE_END = "2024-12-31"

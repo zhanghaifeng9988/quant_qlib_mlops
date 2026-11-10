@@ -8,6 +8,7 @@ import logging
 from mlflow.tracking import MlflowClient
 import psycopg
 from pathlib import Path
+from db_config import DB_CONN_INFO
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
 
@@ -17,9 +18,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(m
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MLFLOW_DB_PATH = PROJECT_ROOT / "mlflow.db"
 TRACKING_URI = f"sqlite:///{MLFLOW_DB_PATH.as_posix()}"
-
-DB_CONN_INFO = "host=localhost port=5432 dbname=metrics user=mlops password=mlops123"
 EXPERIMENT_NAME = "america_stock_strategy"
+
 
 def main():
     logging.info(f"Connecting to MLflow, looking for experiment: {EXPERIMENT_NAME}")

@@ -13,7 +13,7 @@ import qlib
 
 from qlib.constant import REG_US
 from qlib.data import D
-
+from db_config import DB_CONN_INFO
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,10 +26,7 @@ QLIB_DATA_DIR = (
     PROJECT_ROOT / "data" / "qlib_bin" / "us_data"
 )
 
-DB_CONN_INFO = (
-    "host=localhost port=5432 dbname=metrics "
-    "user=mlops password=mlops123"
-)
+
 # 单日有效样本数低于 30 就跳过，避免 IC 统计不稳定。
 MIN_SAMPLES = 30
 

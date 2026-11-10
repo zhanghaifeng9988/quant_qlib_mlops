@@ -6,6 +6,7 @@ import logging
 import requests
 from pathlib import Path
 import psycopg
+from db_config import DB_CONN_INFO
 
 # 日志配置
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
@@ -14,8 +15,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SUMMARY_JSON = PROJECT_ROOT / "data" / "monitoring" / "walkforward_summary.json"
 API_URL = "http://localhost:8000/predict?date=2026-10-16"
 
-# 数据库连接配置（对应 docker-compose 里的 db 服务）
-DB_CONN_INFO = "host=localhost port=5432 dbname=metrics user=mlops password=mlops123"
 
 # --- 建表语句 ---
 CREATE_TABLE_STATEMENTS = """

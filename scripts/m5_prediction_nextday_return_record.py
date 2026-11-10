@@ -5,7 +5,7 @@ import argparse
 import logging
 import math
 from datetime import datetime
-
+from db_config import DB_CONN_INFO
 import psycopg
 import requests
 

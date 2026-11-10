@@ -11,13 +11,13 @@ import logging
 import pandas as pd
 from mlflow.tracking import MlflowClient
 from sqlalchemy import create_engine
+from db_config import DB_URI
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s")
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MLFLOW_DB_PATH = PROJECT_ROOT / "mlflow.db"
 TRACKING_URI = f"sqlite:///{MLFLOW_DB_PATH.as_posix()}"
-DB_URI = "postgresql://mlops:mlops123@localhost:5432/metrics"
 EXPERIMENT_NAME = "america_stock_strategy"
 
 #  指定你要抓取的最新 run 数量（目前是 W1-W9，所以是 9）
