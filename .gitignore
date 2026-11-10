@@ -29,3 +29,9 @@ models/
 # 编辑器
 .idea/
 .vscode/
+
+# Environment variables and secrets
+# 忽略本地真实环境变量文件，忽略其他环境配置文件，例如 .env.production，允许提交示例模板
+.env              
+.env.*
+!.env.example
