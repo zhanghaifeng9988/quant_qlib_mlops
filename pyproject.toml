@@ -26,6 +26,7 @@ research = [
     "mlflow>=3.17.2,<4",
     "shap>=0.49.1",
     "yfinance>=1.7.0",
+    "python-dotenv>=1.0",
 ]
 
 # 模型推理环境：FastAPI、MLflow 和 Qlib 模型加载
