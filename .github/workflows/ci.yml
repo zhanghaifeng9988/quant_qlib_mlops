@@ -3,6 +3,7 @@ name: CI
 # 触发条件：向 main 分支推送代码，或者向 main 分支提交 PR
 on:
   push:
+    workflow_dispatch: # 允许手动触发
     branches:
       - main
   pull_request:
