@@ -229,6 +229,38 @@ run_optional() {
 }
 
 # --------------------------------------------------
+# 5. 强制重启api服务，
+# --------------------------------------------------
+
+echo "===== 重启预测 API ====="
+
+if ! docker restart quant-qlib-api; then
+    echo "[ERROR] API 容器重启失败"
+    exit 1
+fi
+
+echo "[INFO] 等待 API 完成初始化..."
+
+API_READY=0
+
+for i in {1..30}; do
+    if curl -fsS http://localhost:8000/health >/dev/null; then
+        API_READY=1
+        break
+    fi
+
+    sleep 2
+done
+
+if [ "$API_READY" -ne 1 ]; then
+    echo "[ERROR] API 在 60 秒内未能恢复健康"
+    docker logs --tail 50 quant-qlib-api
+    exit 1
+fi
+
+echo "[SUCCESS] API 已恢复健康，可以开始预测"
+
+# --------------------------------------------------
 # 6. 获取预测并入库
 # --------------------------------------------------
 run_optional \

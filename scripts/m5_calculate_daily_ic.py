@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""计算已有完整未来收益数据、且尚未计算过的预测日期的 IC。"""
+"""计算已有完整未来收益数据、且尚未计算过的预测日期的 IC。
+IC 是衡量"模型预测得准不准"的指标。
+"""
 
 import logging
 from pathlib import Path
@@ -28,11 +30,11 @@ DB_CONN_INFO = (
     "host=localhost port=5432 dbname=metrics "
     "user=mlops password=mlops123"
 )
-
+# 单日有效样本数低于 30 就跳过，避免 IC 统计不稳定。
 MIN_SAMPLES = 30
 
 # 在预测日期 t 计算：
-# Close(T+2) / Close(T+1) - 1
+# Close(T+2) / Close(T+1) - 1   未来两日收益率的计算逻辑,得到未来第 1 日到第 2 日之间的日收益率。
 RETURN_EXPR = "Ref($close, -2) / Ref($close, -1) - 1"
 
 
@@ -53,11 +55,11 @@ def main():
     ).normalize()
 
     calendar = calendar.drop_duplicates().sort_values()
-
+# 日历少于 3 天：无法找到 T、T+1、T+2 三天，直接报错。
     if len(calendar) < 3:
         raise ValueError("Qlib 交易日历不足，无法计算 T+2 收益。")
 
-    # 最新一个交易日只能作为 T+2，
+    # 计算最晚可算日期,最新一个交易日只能作为 T+2，
     # 因此最晚可计算的预测日期是倒数第三个交易日
     latest_matured_date = calendar[-3].date()
 
@@ -65,7 +67,7 @@ def main():
         "Latest mature prediction date: %s",
         latest_matured_date
     )
-
+     # 连接数据库、建表、查询待算日期
     # 只查询尚未计算且已经成熟的预测
     with psycopg.connect(DB_CONN_INFO) as conn:
         with conn.cursor() as curr:
@@ -101,7 +103,7 @@ def main():
     if not rows:
         logging.info("No mature pending prediction dates.")
         return 0
-
+    # 把选中的日期的预测数据加载到 DataFrame
     pred_df = pd.DataFrame(
         rows,
         columns=["predict_date", "instrument", "score"]

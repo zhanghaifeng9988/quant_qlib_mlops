@@ -1,0 +1,52 @@
+name: CI
+
+# 触发条件：向 main 分支推送代码，或者向 main 分支提交 PR
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# 设置 GitHub Actions 的最小必要权限
+permissions:
+  contents: read
+
+jobs:
+  quality-check:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      # 第一步：检出 GitHub 仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 第二步：安装 Python 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 第三步：安装 uv
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      # 第四步：检查依赖锁文件是否一致
+      - name: Check dependency lock file
+        run: uv lock --check
+
+      # 第五步：安装开发依赖
+      - name: Install dev dependencies
+        run: uv sync --locked --only-group dev --no-install-project
+
+      # 第六步：执行 Ruff 基础静态检查
+      - name: Run Ruff
+        run: uv run --no-sync ruff check . --select E4,E7,E9,F
+
+      # 第七步：检查 Python 文件能否正常编译
+      - name: Compile Python files
+        run: uv run --no-sync python -m compileall -q app scripts src
