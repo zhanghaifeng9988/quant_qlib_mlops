@@ -43,9 +43,9 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
-      - /home/mlops/quant_qlib_mlops/monitoring/config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
-      - /home/mlops/quant_qlib_mlops/monitoring/config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
-      - /home/mlops/quant_qlib_mlops/monitoring/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./monitoring/config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./monitoring/dashboards:/var/lib/grafana/dashboards
     networks:
       - back-tier
       - front-tier
@@ -56,7 +56,7 @@ services:
     image: quant-qlib-api:v9
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: quant-qlib-api
     restart: unless-stopped
     ports:
