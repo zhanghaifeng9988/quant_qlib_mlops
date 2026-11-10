@@ -15,10 +15,6 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 
-DB_CONN_INFO = (
-    "host=localhost port=5432 dbname=metrics "
-    "user=mlops password=mlops123"
-)
 
 API_URL = "http://localhost:8000/predict"
 
