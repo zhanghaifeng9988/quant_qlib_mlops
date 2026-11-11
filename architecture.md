@@ -525,3 +525,70 @@ M5 的核心目标是解决“模型静默失效”问题。架构采用：**离
 
 ### I.3 批量同步脚本
 为应对开发期间的历史 run 堆积，新增 `dev_sync_batch_metrics.py`，支持精准抓取最新的 N 个 run 并全量覆盖 `walkforward_metrics` 表，保障 Grafana 面板数据一致性。
+
+
+
+---
+
+## 附录 J：CI、Docker 容器化与日更链路验收（2026-11-11）
+
+### J.1 CI 自动化
+
+建立 GitHub Actions 持续集成流程（`.github/workflows/ci.yml`）：
+
+- 使用 Python 3.11 + uv，执行依赖锁定检查（`uv lock --check`）。
+- 执行 Ruff 静态检查。
+- 执行 Python 全项目编译检查。
+- GitHub Actions 连续两次运行通过。
+
+### J.2 Docker 容器化
+
+完成 FastAPI 服务镜像构建配置：
+
+- 采用多阶段 Dockerfile，分离依赖构建与运行环境。
+- 仅安装 serving 依赖，排除 Jupyter 等非必要组件。
+- 安装 LightGBM 所需系统依赖 `libgomp1`。
+- 精确复制 `app/`，通过 `.dockerignore` 排除数据、模型和开发文件。
+- Docker Compose 统一管理 API、PostgreSQL、Grafana 和 Adminer。
+
+### J.3 数据库与安全配置
+
+- 新增 `scripts/db_config.py`，统一管理 PostgreSQL 连接配置。
+- 六个业务脚本统一使用环境变量读取数据库凭据，消除硬编码旧密码。
+- 使用项目根目录 `.env` 管理本地密码，并通过 `.gitignore` 排除真实环境配置。
+- Grafana 数据源改为容器环境变量注入数据库密码。
+- PostgreSQL、Grafana 管理员密码完成更换。
+- 四个服务的宿主机端口统一绑定 `127.0.0.1`，限制外部网络访问。
+
+### J.4 日更流水线稳定性改进
+
+- 特征生成后自动重启 FastAPI，解决 Parquet 文件更新后服务仍使用旧内存数据的问题。
+- 增加 API 重启等待与 `/health` 健康检查，确认服务恢复后再执行预测。
+- 保持原有 IC、PSI 独立监控流程，不扩大流水线改动范围。
+- 修复 `m5_prediction_nextday_return_record.py` 中重复定义数据库连接变量、覆盖统一配置的问题。
+
+### J.5 集成验收结果
+
+2026-11-10、2026-11-11 连续完成真实日更运行：
+
+- 数据更新、数据质量检查、Qlib `.bin` 更新及 Manifest 生成正常。
+- Parquet 特征生成及 API 自动重启正常。
+- 批量预测、PostgreSQL 结果写入正常。
+- 实盘 IC、Rank IC 和 PSI 监控正常。
+- Grafana PostgreSQL 数据源测试通过（Database Connection OK）。
+- 11 月 11 日运行获取到最新 11 月 9 日美股交易数据；11 月 10 日数据暂未由免费 yfinance 数据源提供，不影响本次流水线执行。
+
+**验收结论：** 本地每日数据更新、特征生成、模型推理、结果入库及监控链路运行正常，完成本阶段集成验证。
+
+### J.6 当前状态与下一阶段
+
+- 本地 MLOps 日更链路：基本验收完成。
+- GitHub Actions CI：已通过。
+- Docker Compose 本地服务：运行正常。
+- 数据库凭据管理：完成统一配置。
+- GHCR 镜像构建与发布：待完成。
+- AWS EC2 部署：待完成。
+- Kubernetes：暂不纳入当前实施范围，优先完成 Docker、CI/CD 与云端部署。
+
+**下一阶段目标：Docker 镜像本地构建与验证 → GHCR 发布 → AWS EC2 部署。**
+
