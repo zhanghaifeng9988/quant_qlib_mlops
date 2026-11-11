@@ -1,12 +1,39 @@
-README.md
-.venv
+# Git
 .git
+.gitignore
+
+# Python 环境及缓存
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# 环境变量和敏感信息
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# 本地数据、模型和实验记录
 data/
 mlruns/
 mlflow.db
-__pycache__
-*.pyc
+*.parquet
+*.joblib
+*.pkl
+*.pt
+*.pth
+
+# 日志和文档
 logs/
 docs/
-k8s/
+README.md
 architecture.md
+
+# 开发和部署辅助目录
+k8s/
