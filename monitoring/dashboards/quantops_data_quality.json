@@ -1,0 +1,488 @@
+{
+  "id": null,
+  "uid": "quantops-data-quality",
+  "title": "QuantOps - Data Quality Dashboard",
+  "tags": [
+    "QuantOps",
+    "Data Quality",
+    "MLOps"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "1m",
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "数据新鲜度达标率",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检运行中，行情日期达到目标交易日的标的比例。",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT ROUND(\n            100.0 * COUNT(*) FILTER (WHERE status = '达标')\n            / NULLIF(COUNT(*), 0), 2\n        ) AS value\n        FROM data_freshness_metrics\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 2,
+      "title": "行情滞后标的数",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检中，行情日期早于目标交易日的标的数量。",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS value\n        FROM data_freshness_metrics\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)\n\n          AND status = '滞后'",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "title": "异常 / 缺失标的数",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次新鲜度检查中，异常或缺失的标的数量。",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS value\n        FROM data_freshness_metrics\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)\n\n          AND status IN ('异常', '缺失')",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "title": "数据质量异常记录数",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检运行发现的异常记录总数。",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS value\n        FROM data_quality_issues\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "title": "数据新鲜度趋势",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "按质检运行时间展示达标、滞后、异常和缺失标的数量变化。",
+      "gridPos": {
+        "h": 9,
+        "w": 14,
+        "x": 0,
+        "y": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "WITH latest_runs AS (\n    SELECT DISTINCT ON (target_date)\n        run_id,\n        target_date,\n        checked_at\n    FROM data_quality_runs\n    ORDER BY target_date, checked_at DESC\n)\nSELECT\n    r.checked_at AS \"time\",\n    f.status AS metric,\n    COUNT(*)::double precision AS value\nFROM latest_runs r\nJOIN data_freshness_metrics f\n    ON r.run_id = f.run_id\nWHERE $__timeFilter(r.checked_at)\nGROUP BY r.checked_at, f.status\nORDER BY r.checked_at;",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "异常类型分布",
+      "type": "piechart",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检发现的各类数据异常数量。",
+      "gridPos": {
+        "h": 9,
+        "w": 10,
+        "x": 14,
+        "y": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n            issue_type,\n            COUNT(*)::bigint AS \"异常数量\"\n        FROM data_quality_issues\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)\n\n        GROUP BY issue_type\n        ORDER BY COUNT(*) DESC",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "每日数据质量异常趋势",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "每次质检运行发现的异常记录数量。随着每日运行积累形成趋势。",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "WITH latest_runs AS (\n    SELECT DISTINCT ON (target_date)\n        target_date,\n        checked_at,\n        issue_count\n    FROM data_quality_runs\n    ORDER BY target_date, checked_at DESC\n)\nSELECT\n    checked_at AS \"time\",\n    issue_count::double precision AS value\nFROM latest_runs\nWHERE $__timeFilter(checked_at)\nORDER BY checked_at;",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "行情滞后标的明细",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检中行情日期滞后的标的清单。",
+      "gridPos": {
+        "h": 10,
+        "w": 16,
+        "x": 8,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n            symbol AS \"股票代码\",\n            TO_CHAR(latest_date, 'YYYY-MM-DD') AS \"最新行情日期\",\n            TO_CHAR(target_date, 'YYYY-MM-DD') AS \"目标交易日\",\n            lag_trading_days AS \"滞后交易日数\",\n            detail AS \"说明\"\n        FROM data_freshness_metrics\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)\n\n          AND status = '滞后'\n        ORDER BY lag_trading_days DESC, symbol",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "数据异常明细",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "mlops-pg"
+      },
+      "description": "最新一次质检发现的数据异常记录及对应字段值。",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "mlops-pg"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n            symbol AS \"股票代码\",\n            TO_CHAR(trade_date, 'YYYY-MM-DD') AS \"交易日期\",\n            issue_type AS \"异常类型\",\n            field_name AS \"异常字段\",\n            field_value AS \"字段值\",\n            detected_at AS \"发现时间\"\n        FROM data_quality_issues\n        WHERE run_id = \n(SELECT run_id\n FROM data_quality_runs\n ORDER BY checked_at DESC\n LIMIT 1)\n\n        ORDER BY detected_at DESC",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      }
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  }
+}

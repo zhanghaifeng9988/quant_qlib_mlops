@@ -11,6 +11,85 @@ cd "$PROJECT_ROOT"
 # 可选：通过第一个参数指定预测日期    :- 表示未提供时为空字符串
 REQUESTED_DATE="${1:-}"
 
+# --------------------------------------------------
+# 统一确定本次目标交易日
+# 正常执行时，自动计算最近一个已经收盘的交易日。
+#人工指定日期时，必须是已经收盘的 NYSE 交易日，否则退出。
+# --------------------------------------------------
+echo "===== 确定美股目标交易日 ====="
+
+TARGET_DATE="$(
+uv run python - "$REQUESTED_DATE" <<'PY'
+import sys
+from datetime import date, timedelta
+
+import pandas as pd
+import pandas_market_calendars as mcal
+
+requested_date = sys.argv[1].strip()
+
+now = pd.Timestamp.now(tz="Asia/Shanghai")
+now_utc = now.tz_convert("UTC")
+
+cal = mcal.get_calendar("NYSE")
+
+if requested_date:
+    try:
+        target = date.fromisoformat(requested_date)
+    except ValueError:
+        raise SystemExit(
+            f"日期格式错误：{requested_date}，应为 YYYY-MM-DD"
+        )
+
+    if target.isoformat() != requested_date:
+        raise SystemExit(
+            f"日期格式错误：{requested_date}，应为 YYYY-MM-DD"
+        )
+
+    schedule = cal.schedule(
+        start_date=target,
+        end_date=target,
+    )
+
+    if schedule.empty:
+        raise SystemExit(
+            f"{requested_date} 不是 NYSE 交易日"
+        )
+
+    market_close = schedule.iloc[0]["market_close"]
+
+    if market_close > now_utc:
+        raise SystemExit(
+            f"{requested_date} 尚未收盘，不能作为目标交易日"
+        )
+
+    target_date = target
+
+else:
+    schedule = cal.schedule(
+        start_date=now.date() - timedelta(days=14),
+        end_date=now.date(),
+    )
+
+    completed = schedule[
+        schedule["market_close"] <= now_utc
+    ]
+
+    if completed.empty:
+        raise SystemExit("无法找到最近一个已经收盘的美股交易日")
+
+    target_date = completed.index[-1].date()
+
+print(target_date.isoformat())
+PY
+)"
+
+# 传递给后续子进程
+export TARGET_DATE
+
+echo "📅 本次目标交易日：$TARGET_DATE"
+echo "🕒 当前北京时间：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S')"
+
 # 临时文件清理
 TMP_INSTRUMENTS=""  #初始化临时文件变量，避免 set -u 下未定义。
 
@@ -141,20 +220,7 @@ else
     echo "✅ 本地行情数据基础验证通过。"
 fi
 
-# 确定预测日期
-if [[ -n "$REQUESTED_DATE" ]]; then
-    TARGET_DATE="$REQUESTED_DATE"
-else
-    TARGET_DATE="$LATEST_DATA_DATE"
-fi
 
-# 检查日期格式
-if ! date -d "$TARGET_DATE" "+%Y-%m-%d" >/dev/null 2>&1; then
-    echo "❌ 预测日期格式错误：$TARGET_DATE" >&2
-    exit 1
-fi
-
-echo "📅 本次预测日期：$TARGET_DATE"
 
 # --------------------------------------------------
 # 2. 数据质量检测与清洗

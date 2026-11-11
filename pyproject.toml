@@ -27,6 +27,7 @@ research = [
     "shap>=0.49.1",
     "yfinance>=1.7.0",
     "python-dotenv>=1.0",
+    "pandas-market-calendars>=5.5.0",
 ]
 
 # 模型推理环境：FastAPI、MLflow 和 Qlib 模型加载

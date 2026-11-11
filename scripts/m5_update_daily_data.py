@@ -6,7 +6,7 @@ import os
 import time
 from datetime import date, timedelta
 from pathlib import Path
-
+import pandas_market_calendars as mcal
 import pandas as pd
 import yaml
 import yfinance as yf
@@ -26,8 +26,29 @@ LOG_FILE = LOG_DIR / "data_quality.log"
 BATCH_SIZE = 50
 BATCH_SLEEP_SECONDS = 6
 
-START = (date.today() - timedelta(days=3)).isoformat()
-END = (date.today() + timedelta(days=1)).isoformat()
+# 从主流水线读取统一的目标交易日
+TARGET_DATE = os.getenv("TARGET_DATE", "").strip()
+
+if not TARGET_DATE:
+    raise RuntimeError(
+        "缺少 TARGET_DATE，请通过主流水线传入目标交易日。"
+    )
+
+try:
+    target_date = date.fromisoformat(TARGET_DATE)
+except ValueError as exc:
+    raise RuntimeError(
+        f"TARGET_DATE 格式错误：{TARGET_DATE}"
+    ) from exc
+
+if target_date.isoformat() != TARGET_DATE:
+    raise RuntimeError(
+        f"TARGET_DATE 格式错误：{TARGET_DATE}"
+    )
+
+# yfinance 的 end 参数不包含结束日期
+START = (target_date - timedelta(days=3)).isoformat()
+END = (target_date + timedelta(days=1)).isoformat()
 
 OUT.mkdir(parents=True, exist_ok=True)
 LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -217,6 +238,180 @@ def save_symbol_data(symbol, new_df):
         combined["date"].max(),
     )
 
+# ============================================================
+# 8. 检查每只股票的行情新鲜度并生成报告
+# ============================================================
+
+def generate_freshness_report(symbols, target_date):
+    """
+    检查股票池中全部股票的 CSV 最新行情日期。
+
+    状态：
+    达标：最新行情日期等于目标交易日
+    滞后：最新行情日期早于目标交易日
+    异常：CSV 损坏、日期字段异常、日期不是交易日或日期超前
+    缺失：CSV 文件不存在或没有数据
+    """
+
+    cal = mcal.get_calendar("NYSE")
+    target = date.fromisoformat(target_date)
+
+    records = []
+
+    for symbol in symbols:
+        csv_path = OUT / f"{symbol}.csv"
+
+        record = {
+            "symbol": symbol,
+            "target_date": target_date,
+            "latest_date": "",
+            "lag_trading_days": "",
+            "status": "",
+            "detail": "",
+        }
+
+        # 1. CSV 文件不存在
+        if not csv_path.exists():
+            record["status"] = "缺失"
+            record["detail"] = "CSV 文件不存在"
+            records.append(record)
+            continue
+
+        # 2. 读取 CSV
+        try:
+            df = pd.read_csv(csv_path)
+        except Exception as exc:
+            record["status"] = "异常"
+            record["detail"] = f"CSV 读取失败：{exc}"
+            records.append(record)
+            continue
+
+        if df.empty:
+            record["status"] = "缺失"
+            record["detail"] = "CSV 文件没有数据"
+            records.append(record)
+            continue
+
+        if "date" not in df.columns:
+            record["status"] = "异常"
+            record["detail"] = "CSV 缺少 date 字段"
+            records.append(record)
+            continue
+
+        # 3. 提取最新有效日期，并检查无效日期记录
+        parsed_dates = pd.to_datetime(
+            df["date"],
+            errors="coerce",
+        )
+
+        invalid_count = int(parsed_dates.isna().sum())
+
+        valid_dates = parsed_dates.dropna()
+
+        if valid_dates.empty:
+            record["status"] = "异常"
+            record["detail"] = "date 字段没有有效日期"
+            records.append(record)
+            continue
+
+        latest = valid_dates.dt.date.max()
+        record["latest_date"] = latest.isoformat()
+
+        if invalid_count > 0:
+            record["status"] = "异常"
+            record["detail"] = f"发现 {invalid_count} 条无效日期记录"
+            records.append(record)
+            continue
+
+        # 4. 检查是否出现目标日期之后的数据
+        if latest > target:
+            record["status"] = "异常"
+            record["detail"] = "最新行情日期晚于目标交易日"
+            records.append(record)
+            continue
+
+        # 5. 检查最新行情日期是否为 NYSE 交易日
+        latest_schedule = cal.schedule(
+            start_date=latest,
+            end_date=latest,
+        )
+
+        if latest_schedule.empty:
+            record["status"] = "异常"
+            record["detail"] = "CSV 最新行情日期不是 NYSE 交易日"
+            records.append(record)
+            continue
+
+        # 6. 判断是否达到目标日期
+        if latest == target:
+            record["status"] = "达标"
+            record["lag_trading_days"] = 0
+            record["detail"] = "已更新至目标交易日"
+            records.append(record)
+            continue
+
+        # 7. 计算落后的交易日数量
+        lag_schedule = cal.schedule(
+            start_date=latest + timedelta(days=1),
+            end_date=target,
+        )
+
+        lag_days = len(lag_schedule)
+
+        record["lag_trading_days"] = lag_days
+        record["status"] = "滞后"
+        record["detail"] = f"落后目标日期 {lag_days} 个交易日"
+
+        records.append(record)
+
+    # 8. 保存报告
+    report_df = pd.DataFrame(records)
+
+    timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S_%f")
+
+    report_path = (
+        LOG_DIR
+        / f"data_freshness_{target_date}_{timestamp}.csv"
+    )
+
+    report_df.to_csv(
+        report_path,
+        index=False,
+        encoding="utf-8-sig",
+    )
+
+    # 9. 汇总统计
+    counts = report_df["status"].value_counts()
+
+    passed = int(counts.get("达标", 0))
+    lagged = int(counts.get("滞后", 0))
+    abnormal = int(counts.get("异常", 0))
+    missing = int(counts.get("缺失", 0))
+
+    print("\n" + "=" * 50)
+    print("行情新鲜度检查结果")
+    print("=" * 50)
+    print(f"目标交易日：{target_date}")
+    print(f"检查股票数：{len(symbols)}")
+    print(f"达标：{passed}")
+    print(f"滞后：{lagged}")
+    print(f"异常：{abnormal}")
+    print(f"缺失：{missing}")
+    print(f"报告文件：{report_path}")
+
+    if lagged or abnormal or missing:
+        logger.warning(
+            "行情新鲜度检查发现问题：达标=%s，滞后=%s，异常=%s，缺失=%s",
+            passed,
+            lagged,
+            abnormal,
+            missing,
+        )
+    else:
+        logger.info("全部股票行情均已达到目标交易日")
+
+    return report_path
+
 
 # ============================================================
 # 8. 主程序
@@ -334,7 +529,22 @@ def main():
         yf_logger.removeHandler(capture)
 
     # ========================================================
-    # 9. 汇总结果
+    # 9. 行情新鲜度检查
+    # ========================================================
+
+    try:
+        generate_freshness_report(
+            symbols=symbols,
+            target_date=TARGET_DATE,
+        )
+    except Exception:
+        # 新鲜度报告属于监控功能。
+        # 报告生成失败不改变原有下载结果和退出状态。
+        logger.exception("行情新鲜度报告生成失败")
+        print("[WARNING] 行情新鲜度报告生成失败，不影响后续流水线")
+
+    # ========================================================
+    # 10. 汇总结果
     # ========================================================
 
     success_count = len(success_symbols)

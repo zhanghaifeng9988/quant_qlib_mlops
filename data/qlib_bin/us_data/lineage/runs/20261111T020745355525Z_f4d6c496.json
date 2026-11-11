@@ -1,0 +1,48 @@
+{
+  "snapshot_date": "2026-10-19",
+  "generated_at": "2026-11-11T02:07:45.355525+00:00",
+  "universe_snapshot_id": "us_2026-10-19_dev499",
+  "target_universe_count": 517,
+  "dev_universe_count": 499,
+  "dev_universe_rule": "top 499 by market_cap from target_universe",
+  "industry_mapping": {
+    "file": "data/universe/industry_mapping.csv",
+    "sha256": "e403e47b7ae2ea287d71abdc026cb4c43fa0733b62005ac6eef3995c8d690f9d"
+  },
+  "raw_data": {
+    "directory": "data/raw/us_daily",
+    "csv_file_count": 500,
+    "sha256": "66dc1d876a0a99367e31e2af41fe7781120201237f69733730fd909d4b3444a8"
+  },
+  "qlib_data": {
+    "provider_uri": "data/qlib_bin/us_data",
+    "instrument_count": 499,
+    "calendar_start": "2011-10-24",
+    "calendar_end": "2026-11-10",
+    "calendar_days": 3784,
+    "fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "factor"
+    ],
+    "features_sha256": "38656abd402817bccacf305596da0f2ea5b7bdf05e20922fddc94dcba1ba50c7",
+    "instruments_sha256": "5c66e11c20e82edbe09d0c4fd8af1a733d1694140165a2689d0fd3500e5af6f2",
+    "calendars_sha256": "68ecc351701d1d71bccf101b7af2f40f4f185c05c2211b937d94e7eed0e24ed8"
+  },
+  "sources": {
+    "tickers": "https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/data/v2/tickers.csv",
+    "nasdaq100": "https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv",
+    "dowjones": "https://yfiua.github.io/index-constituents/constituents-dowjones.csv"
+  },
+  "lineage": {
+    "run_id": "20261111T020745355525Z_f4d6c496",
+    "parent_run_id": "20261111T012113050960Z_8b0bd8c6",
+    "status": "success",
+    "recorded_at": "2026-11-11T02:07:45.355525+00:00",
+    "history_file": "lineage/runs/20261111T020745355525Z_f4d6c496.json",
+    "code_version": "4ba382b557dfb388d890efd0936ecf5ba3648900"
+  }
+}
