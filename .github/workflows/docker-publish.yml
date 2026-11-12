@@ -6,6 +6,8 @@ on:
       - main
     tags:
       - "v*"
+    paths-ignore:
+      - 'data/**'
   workflow_dispatch:
 
 permissions:
