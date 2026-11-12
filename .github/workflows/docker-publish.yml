@@ -6,8 +6,12 @@ on:
       - main
     tags:
       - "v*"
-    paths-ignore:
-      - 'data/**'
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'app/**'
   workflow_dispatch:
 
 permissions:
