@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # 负责建表、写入 7 窗口回测指标、测试历史预测。
+# # ⚠️ 本脚本仅用于项目首次初始化数据库表结构（DROP + CREATE），已归档，请勿日常执行。
+# 重跑会清空 predictions / drift_metrics / walkforward_metrics 的全部历史监控数据。
+# 日常写入走 m5_prediction_nextday_return_record.py / m5_calculate_daily_ic.py / m5_calculate_daily_psi.py。
 """M5: 原生 psycopg 驱动，初始化数据库并写入 M2 指标和 API 预测记录。"""
 import json
 import logging
