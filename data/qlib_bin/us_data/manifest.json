@@ -1,6 +1,6 @@
 {
   "snapshot_date": "2026-10-19",
-  "generated_at": "2026-11-12T08:37:43.090781+00:00",
+  "generated_at": "2026-11-13T00:58:22.717522+00:00",
   "universe_snapshot_id": "us_2026-10-19_dev499",
   "target_universe_count": 517,
   "dev_universe_count": 499,
@@ -12,14 +12,14 @@
   "raw_data": {
     "directory": "data/raw/us_daily",
     "csv_file_count": 500,
-    "sha256": "fcdb3541ed5acef7ea461fd4ba76aeafcc16ae1c868c548e1874576e920dd302"
+    "sha256": "2f40471838d4566d5b5112944217085c4fa87a5bab50e2c3efa5c855f24bd0d1"
   },
   "qlib_data": {
     "provider_uri": "data/qlib_bin/us_data",
     "instrument_count": 499,
     "calendar_start": "2011-10-24",
-    "calendar_end": "2026-11-11",
-    "calendar_days": 3785,
+    "calendar_end": "2026-11-12",
+    "calendar_days": 3786,
     "fields": [
       "open",
       "high",
@@ -28,9 +28,9 @@
       "volume",
       "factor"
     ],
-    "features_sha256": "aeefea74dffba78be129d55a5b5cbbb7ae9ce2bfdb29e41a8588582373a14bec",
-    "instruments_sha256": "4bf3c26c68880df1629a3e416a294f231c4340be7fb9794c73bb90aa728b7888",
-    "calendars_sha256": "67b50fa4a03eb07e96eff968b9d31bd3437ab56d062d775a13e9acf03b7c664e"
+    "features_sha256": "27c759a940fc2e22073374fd2c9e3ad6c811039ddb88195f9d81572743fa265c",
+    "instruments_sha256": "10de58b246b97913d53871bf0b8a6ee2e784263f3ecc4e1b598cdd81c5b4aa73",
+    "calendars_sha256": "72cd2d74d9251aa56542cd67f77d7b0e007c3f9a8d86cf1dc95a00b6a4dd1ea6"
   },
   "sources": {
     "tickers": "https://raw.githubusercontent.com/zyhe16/top-us-stock-tickers/main/data/v2/tickers.csv",
@@ -38,11 +38,11 @@
     "dowjones": "https://yfiua.github.io/index-constituents/constituents-dowjones.csv"
   },
   "lineage": {
-    "run_id": "20261112T083743090781Z_86cb9232",
-    "parent_run_id": "20261111T080620882524Z_8edd2b9a",
+    "run_id": "20261113T005822717522Z_c651afc9",
+    "parent_run_id": "20261112T083743090781Z_86cb9232",
     "status": "success",
-    "recorded_at": "2026-11-12T08:37:43.090781+00:00",
-    "history_file": "lineage/runs/20261112T083743090781Z_86cb9232.json",
-    "code_version": "d437658b7bb69bb0ad1f708086127dafc0b83e05"
+    "recorded_at": "2026-11-13T00:58:22.717522+00:00",
+    "history_file": "lineage/runs/20261113T005822717522Z_c651afc9.json",
+    "code_version": "66d664ef47c6a1715d08b300c54022c03aa61c60"
   }
 }
