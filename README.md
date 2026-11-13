@@ -1,3 +1,4 @@
+本项目是 MLOps 工程能力练习，量化仅作为载体，不涉及策略研究或交易
 # Quant Qlib MLOps
 
 **An end-to-end MLOps engineering project for quantitative machine learning.**
